@@ -76,7 +76,7 @@ namespace PicrossSolverLibrary
         }
 
         
-        public bool BasicValidate(PicrossLine line)
+        public bool Validate(PicrossLine line)
         {
             var lineBlocks = line.ComputeBlocks();
             if (BlockCount == lineBlocks.Count())
@@ -85,6 +85,18 @@ namespace PicrossSolverLibrary
             {
                 return Enumerable.Range(0, BlockCount).All(blockIndex =>
                     lineBlocks.ElementAt(blockIndex) <= BlocksRule.ElementAt(blockIndex));
+            }
+        }
+
+        public bool CheckSolution(PicrossLine line)
+        {
+            var lineBlocks = line.ComputeBlocks();
+            if (BlockCount == lineBlocks.Count())
+                return false;
+            else
+            {
+                return Enumerable.Range(0, BlockCount).All(blockIndex =>
+                    lineBlocks.ElementAt(blockIndex) == BlocksRule.ElementAt(blockIndex));
             }
         }
 

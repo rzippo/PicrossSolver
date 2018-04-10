@@ -17,7 +17,8 @@ namespace PicrossSolverLibrary
         public PicrossLineRule Rule { get; }
         public IEnumerable<PicrossLine> CandidateSolutions { get; private set; }
 
-        public bool IsSolved { get; private set; }
+        public bool IsValid => Rule.Validate(this);
+        public bool IsSolved => Rule.CheckSolution(this);
         
         public PicrossActiveLine(IEnumerable<PicrossCell> cells, PicrossLineRule rule)
            : base(cells)
@@ -27,13 +28,18 @@ namespace PicrossSolverLibrary
             
             foreach(PicrossCell cell in Cells)
             {
-                cell.PropertyChanged += ReviewCandidates;
+                cell.PropertyChanged += CellPropertyChangedHandler;
             }
+        }
+
+        private void CellPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
+        {
+            ReviewCandidates();
         }
 
         //todo: how to propagate speculation failed error?
         //note: this is assuming that cells only change Void->Filled
-        private void ReviewCandidates(object sender, PropertyChangedEventArgs e)
+        private void ReviewCandidates()
         {
             var survivingCandidates = CandidateSolutions.Where(candidate => candidate.IsCandidate(Cells));
             CandidateSolutions = survivingCandidates;
