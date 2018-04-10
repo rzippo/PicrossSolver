@@ -91,7 +91,61 @@ namespace PicrossSolverLibrary
         //todo: find an algorithm to generate speculative candidates
         public IEnumerable<PicrossLine> GenerateCandidates()
         {
-            throw new NotImplementedException();
+            var gapRules = GetGapRules();
+            var generatedGaps = GenerateGapStructures(gapRules);
+            return GenerateLinesFromGapStructures(generatedGaps);
+        }
+
+        private IEnumerable<Tuple<int, int>> GetGapRules()
+        {
+            int voidsToAllocate = LineLength - FilledCells - MinGaps;
+            var gapRules = new List<Tuple<int, int>>();
+
+            //Left outer gap
+            gapRules.Add(new Tuple<int, int>(0, voidsToAllocate));
+
+            //Inner gapStructures
+            for (int innerGapIndex = 0; innerGapIndex < MinGaps; innerGapIndex++)
+                gapRules.Add(new Tuple<int, int>(1, 1 + voidsToAllocate));
+
+            //Right outer gap
+            gapRules.Add(new Tuple<int, int>(0, voidsToAllocate));
+
+            return gapRules;
+        }
+
+        //todo: find decent names
+        private IEnumerable<IEnumerable<int>> GenerateGapStructures(IEnumerable<Tuple<int, int>> gapRules)
+        {
+            if(gapRules.Count() == 0)
+                return new List<IEnumerable<int>>() {new List<int>()};
+
+            var gapStructures = new List<IEnumerable<int>>();
+            var headRule = gapRules.First();
+            foreach (int headValue in Enumerable.Range(headRule.Item1, headRule.Item2))
+            {
+                var innerGapRules = gapRules.Skip(1);
+                var innerGaps = GenerateGapStructures(innerGapRules);
+
+                foreach (var innerGap in innerGaps)
+                {
+                    var gapStructure = new List<int>() {headValue};
+                    gapStructure.AddRange(innerGap);
+                    gapStructures.Add(gapStructure);
+                }    
+            }
+            return gapStructures;
+        }
+
+        //todo: still, find decent names
+        private IEnumerable<PicrossLine> GenerateLinesFromGapStructures(IEnumerable<IEnumerable<int>> gapStructures)
+        {
+            var lines = new List<PicrossLine>();
+            foreach (var gapStructure in gapStructures)
+            {
+                lines.Add(new PicrossLine(BlocksRule, gapStructure));
+            }
+            return lines;
         }
     }
 }

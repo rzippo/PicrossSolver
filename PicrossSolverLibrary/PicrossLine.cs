@@ -13,6 +13,52 @@ namespace PicrossSolverLibrary
         {
             Cells = cells;
         }
+        
+        public PicrossLine(IEnumerable<int> blocksRule, IEnumerable<int> gap)
+        {
+            if(gap.Count() != blocksRule.Count() + 1)
+                throw new ArgumentException();
+
+            var cells = new List<PicrossCell>();
+
+            for (int pairIndex = 0; pairIndex < blocksRule.Count(); pairIndex++)
+            {
+                cells.AddRange(FillGap(gap.ElementAt(pairIndex)));
+                cells.AddRange(FillBlock(blocksRule.ElementAt(pairIndex)));
+            }
+
+            cells.AddRange(FillGap(gap.Last()));
+
+            Cells = cells;
+        }
+
+        private IEnumerable<PicrossCell> FillGap(int gapSize)
+        {
+            var cells = new List<PicrossCell>();
+
+            for (int gapInnerIndex = 0; gapInnerIndex < gapSize; gapInnerIndex++)
+            {
+                cells.Add(new PicrossCell()
+                {
+                    State = PicrossCellState.Void
+                });
+            }
+            return cells;
+        }
+
+        private IEnumerable<PicrossCell> FillBlock(int blockSize)
+        {
+            var cells = new List<PicrossCell>();
+
+            for (int blockInnerIndex = 0; blockInnerIndex < blockSize; blockInnerIndex++)
+            {
+                cells.Add(new PicrossCell()
+                {
+                    State = PicrossCellState.Filled
+                });
+            }
+            return cells;
+        }
 
         public IEnumerable<int> ComputeBlocks()
         {
