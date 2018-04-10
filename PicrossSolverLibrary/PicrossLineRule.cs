@@ -88,7 +88,6 @@ namespace PicrossSolverLibrary
             }
         }
 
-        //todo: find an algorithm to generate speculative candidates
         public IEnumerable<PicrossLine> GenerateCandidates()
         {
             if (IsTrivial)
@@ -120,7 +119,6 @@ namespace PicrossSolverLibrary
             return gapRules;
         }
 
-        //todo: find decent names
         private IEnumerable<IEnumerable<int>> GenerateGapStructures(IEnumerable<Tuple<int, int>> gapRules)
         {
             if(gapRules.Count() == 0)
@@ -143,7 +141,6 @@ namespace PicrossSolverLibrary
             return gapStructures;
         }
 
-        //todo: still, find decent names
         private IEnumerable<PicrossLine> GenerateLinesFromGapStructures(IEnumerable<IEnumerable<int>> gapStructures)
         {
             var lines = new List<PicrossLine>();
