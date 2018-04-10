@@ -7,13 +7,14 @@ namespace PicrossSolverLibrary
 {
     public class PicrossLineRule
     {
-        public List<int> LineStructure { get; }
+        public List<int> BlocksRule { get; }
         public int LineLength { get; }
 
-        public int BlockCount => LineStructure.Count;
+        public int BlockCount => BlocksRule.Count;
         public int InnerBlockCount => BlockCount - 2;
 
-        public int FilledCells => LineStructure.Sum();
+        public int FilledCells => BlocksRule.Sum();
+        public int MinRequiredSpace => FilledCells + MinGaps;
 
         public int MinGaps
         {
@@ -21,10 +22,7 @@ namespace PicrossSolverLibrary
             {
                 if(BlockCount == 1)
                 {
-                    if (FilledCells == LineLength)
-                        return 0;
-                    else
-                        return 1;
+                    return FilledCells == LineLength ? 0 : 1;
                 }
                 else
                 {
@@ -37,9 +35,9 @@ namespace PicrossSolverLibrary
         {
             get
             {
-                if (FilledCells + MinGaps < LineLength)
+                if (MinRequiredSpace < LineLength)
                 {
-                    return MinGaps + Math.Min(LineLength - (FilledCells + MinGaps), 2);
+                    return MinGaps + Math.Min(LineLength - MinRequiredSpace, 2);
                 }
                 else
                 {
@@ -48,20 +46,22 @@ namespace PicrossSolverLibrary
             }
         }
 
-        public bool IsTrivial => MinGaps == MaxGaps;
+        public bool IsLegal => MinRequiredSpace <= LineLength;
 
-        public IEnumerable<bool> TrivialSolution()
+        public bool IsTrivial => IsLegal && MinGaps == MaxGaps;
+
+        public IEnumerable<PicrossCellState> TrivialSolution()
         {
             if (!IsTrivial)
                 return null;
 
-            bool[] solution = new bool[LineLength];
+            PicrossCellState[] solution = new PicrossCellState[LineLength];
             int lineIndex = 0;
             for (int blockIndex = 0; blockIndex < BlockCount; blockIndex++)
             {
-                for (int fillingIndex = 0; fillingIndex < LineStructure[blockIndex]; fillingIndex++)
+                for (int fillingIndex = 0; fillingIndex < BlocksRule[blockIndex]; fillingIndex++)
                 {
-                    solution[lineIndex] = true;
+                    solution[lineIndex] = PicrossCellState.Filled;
                     lineIndex++;
                 }
                 lineIndex++;
@@ -72,20 +72,56 @@ namespace PicrossSolverLibrary
 
         public PicrossLineRule(IEnumerable<int> lineStructure, int lineLength)
         {
-            LineStructure = new List<int>(lineStructure);
+            BlocksRule = new List<int>(lineStructure);
             LineLength = lineLength;
         }
 
-        public bool IsLegal()
+        
+        public bool Validate(IEnumerable<PicrossCellState> line)
         {
-            //todo: implement IsLegal()
-            return true;
+            return BlockByBlockValidate(line);
+
+            //todo: find a more clever algorithm that computes possible connections and available space
         }
 
-        public bool Validate(IEnumerable<bool> line)
+        private bool BlockByBlockValidate(IEnumerable<PicrossCellState> line)
         {
-            //todo: implement Validate()
-            return true;
+            var lineBlocks = ComputeBlocks(line);
+            return BlockCount == lineBlocks.Count() &&
+                   Enumerable.Range(0, BlockCount).All(blockIndex =>
+                       lineBlocks.ElementAt(blockIndex) <= BlocksRule.ElementAt(blockIndex));
+        }
+
+        private IEnumerable<int> ComputeBlocks(IEnumerable<PicrossCellState> line)
+        {
+            List<int> lineBlocks = new List<int>();
+
+            int nextBlock = 0;
+            bool blockActive = false;
+
+            for (int lineIndex = 0; lineIndex < line.Count(); lineIndex++)
+            {
+                if (line.ElementAt(lineIndex) == PicrossCellState.Filled)
+                {
+                    if (blockActive)
+                        lineBlocks[nextBlock - 1]++;
+                    else
+                    {
+                        lineBlocks.Add(1);
+                        nextBlock++;
+                        blockActive = true;
+                    }
+                }
+                else
+                {
+                    if (blockActive)
+                    {
+                        blockActive = false;
+                    }
+                }
+            }
+
+            return lineBlocks;
         }
     }
 }
