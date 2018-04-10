@@ -68,8 +68,7 @@ namespace PicrossSolverLibrary
             }
             return solution;
         }
-
-
+        
         public PicrossLineRule(IEnumerable<int> lineStructure, int lineLength)
         {
             BlocksRule = new List<int>(lineStructure);
@@ -77,51 +76,22 @@ namespace PicrossSolverLibrary
         }
 
         
-        public bool Validate(IEnumerable<PicrossCellState> line)
+        public bool BasicValidate(PicrossLine line)
         {
-            return BlockByBlockValidate(line);
-
-            //todo: find a more clever algorithm that computes possible connections and available space
-        }
-
-        private bool BlockByBlockValidate(IEnumerable<PicrossCellState> line)
-        {
-            var lineBlocks = ComputeBlocks(line);
-            return BlockCount == lineBlocks.Count() &&
-                   Enumerable.Range(0, BlockCount).All(blockIndex =>
-                       lineBlocks.ElementAt(blockIndex) <= BlocksRule.ElementAt(blockIndex));
-        }
-
-        private IEnumerable<int> ComputeBlocks(IEnumerable<PicrossCellState> line)
-        {
-            List<int> lineBlocks = new List<int>();
-
-            int nextBlock = 0;
-            bool blockActive = false;
-
-            for (int lineIndex = 0; lineIndex < line.Count(); lineIndex++)
+            var lineBlocks = line.ComputeBlocks();
+            if (BlockCount == lineBlocks.Count())
+                return false;
+            else
             {
-                if (line.ElementAt(lineIndex) == PicrossCellState.Filled)
-                {
-                    if (blockActive)
-                        lineBlocks[nextBlock - 1]++;
-                    else
-                    {
-                        lineBlocks.Add(1);
-                        nextBlock++;
-                        blockActive = true;
-                    }
-                }
-                else
-                {
-                    if (blockActive)
-                    {
-                        blockActive = false;
-                    }
-                }
+                return Enumerable.Range(0, BlockCount).All(blockIndex =>
+                    lineBlocks.ElementAt(blockIndex) <= BlocksRule.ElementAt(blockIndex));
             }
+        }
 
-            return lineBlocks;
+        //todo: find an algorithm to generate speculative candidates
+        public IEnumerable<PicrossLine> GenerateCandidates()
+        {
+            throw new NotImplementedException();
         }
     }
 }
