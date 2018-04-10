@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace PicrossSolverLibrary
@@ -11,6 +12,8 @@ namespace PicrossSolverLibrary
 
         public PicrossActiveLine[] Columns { get; }
         public PicrossActiveLine[] Rows { get; }
+
+        public IEnumerable<PicrossActiveLine> ActiveLines { get; }
 
         public int RowCount { get; }
         public int ColumnCount { get; }
@@ -27,6 +30,7 @@ namespace PicrossSolverLibrary
 
             Columns = GatherColumns();
             Rows = GatherRows();
+            ActiveLines = (new[] {Columns, Rows}).SelectMany(collection => collection);
         }
 
         private PicrossActiveLine[] GatherColumns()
