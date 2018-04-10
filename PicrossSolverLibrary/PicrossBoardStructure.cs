@@ -7,33 +7,64 @@ namespace PicrossSolverLibrary
 {
     public partial class PicrossBoard
     {
-        public PicrossCellState[,] Matrix { get; }
-        public PicrossLineRule[] ColumnRules { get; }
-        public PicrossLineRule[] RowRules { get; }
+        public PicrossCell[,] Matrix { get; }
+
+        public PicrossActiveLine[] Columns { get; }
+        public PicrossActiveLine[] Rows { get; }
 
         public int RowCount { get; }
         public int ColumnCount { get; }
 
+        public PicrossPuzzle Puzzle { get; }
+
         public PicrossBoard(PicrossPuzzle puzzle)
         {
-            RowCount = puzzle.RowCount;
-            ColumnCount = puzzle.ColumnCount;
-            Matrix = new PicrossCellState[RowCount, ColumnCount];
+            Puzzle = puzzle;
 
-            ColumnRules = new PicrossLineRule[ColumnCount];
-            RowRules = new PicrossLineRule[RowCount];
+            RowCount = Puzzle.RowCount;
+            ColumnCount = Puzzle.ColumnCount;
+            Matrix = new PicrossCell[RowCount, ColumnCount];
+
+            Columns = GatherColumns();
+            Rows = GatherRows();
+        }
+
+        private PicrossActiveLine[] GatherColumns()
+        {
+            var columns = new PicrossActiveLine[ColumnCount];
 
             for (int columnIndex = 0; columnIndex < ColumnCount; columnIndex++)
             {
-                ColumnRules[columnIndex] =
-                    new PicrossLineRule(puzzle.ColumnRules[columnIndex], RowCount);
+                var columnCells = new List<PicrossCell>();
+                for (int rowIndex = 0; rowIndex < RowCount; rowIndex++)
+                    columnCells.Add(Matrix[rowIndex, columnIndex]);
+
+                var columnRule =
+                    new PicrossLineRule(Puzzle.ColumnRules[columnIndex], RowCount);
+
+                columns[columnIndex] = new PicrossActiveLine(columnCells, columnRule);
             }
+
+            return columns;
+        }
+
+        private PicrossActiveLine[] GatherRows()
+        {
+            var rows = new PicrossActiveLine[ColumnCount];
 
             for (int rowIndex = 0; rowIndex < RowCount; rowIndex++)
             {
-                RowRules[rowIndex] =
-                    new PicrossLineRule(puzzle.RowRules[rowIndex], ColumnCount);
+                var rowCells = new List<PicrossCell>();
+                for (int columnIndex = 0; columnIndex < ColumnCount; columnIndex++)
+                    rowCells.Add(Matrix[rowIndex, columnIndex]);
+
+                var rowRule =
+                    new PicrossLineRule(Puzzle.RowRules[rowIndex], RowCount);
+
+                rows[rowIndex] = new PicrossActiveLine(rowCells, rowRule);
             }
+
+            return rows;
         }
     }
 }
