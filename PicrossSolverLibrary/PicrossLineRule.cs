@@ -91,6 +91,12 @@ namespace PicrossSolverLibrary
         //todo: find an algorithm to generate speculative candidates
         public IEnumerable<PicrossLine> GenerateCandidates()
         {
+            if (IsTrivial)
+                return new List<PicrossLine>()
+                {
+                    new PicrossLine(TrivialSolution())
+                };
+
             var gapRules = GetGapRules();
             var generatedGaps = GenerateGapStructures(gapRules);
             return GenerateLinesFromGapStructures(generatedGaps);

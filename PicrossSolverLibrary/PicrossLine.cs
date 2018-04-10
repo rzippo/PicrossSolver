@@ -13,6 +13,19 @@ namespace PicrossSolverLibrary
         {
             Cells = cells;
         }
+
+        public PicrossLine(IEnumerable<PicrossCellState> cellStates)
+        {
+            var cells = new List<PicrossCell>();
+            foreach (var cellState in cellStates)
+            {
+                cells.Add(new PicrossCell()
+                {
+                    State = cellState
+                });
+            }
+            Cells = cells;
+        }
         
         public PicrossLine(IEnumerable<int> blocksRule, IEnumerable<int> gap)
         {
