@@ -108,17 +108,16 @@ namespace PicrossSolverLibrary
 
         //This function should check if this line is a valid speculative candidate for the line we pass as a parameter
         //This does not count validity - we suppose that the speculative line was generated from the rule
-        //todo: find better names
-        public bool IsCandidate(IEnumerable<PicrossCell> matchingLine)
+        public bool IsCandidate(IEnumerable<PicrossCell> activeLine)
         {
-            if (matchingLine.Count() != Cells.Count())
+            if (activeLine.Count() != Cells.Count())
                 return false;
             else
             {
-                var matchingFilledIndexes = Enumerable.Range(0, matchingLine.Count())
-                    .Where(lineIndex => matchingLine.ElementAt(lineIndex) == PicrossCellState.Filled);
+                var activeLineFilledIndexes = Enumerable.Range(0, activeLine.Count())
+                    .Where(lineIndex => activeLine.ElementAt(lineIndex) == PicrossCellState.Filled);
 
-                return matchingFilledIndexes.All(lineIndex => Cells.ElementAt(lineIndex) == PicrossCellState.Filled);
+                return activeLineFilledIndexes.All(lineIndex => Cells.ElementAt(lineIndex) == PicrossCellState.Filled);
             }
         }
     }
