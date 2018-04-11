@@ -29,6 +29,9 @@ namespace PicrossSolverLibrary
             }
         }
 
+        public int Row { get; set; }
+        public int Column { get; set; }
+
         public static implicit operator PicrossCellState(PicrossCell cell)
         {
             return cell.State;

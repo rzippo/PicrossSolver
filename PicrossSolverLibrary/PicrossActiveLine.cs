@@ -15,15 +15,22 @@ namespace PicrossSolverLibrary
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        public LineType Type { get; }
+        public int Index { get; }
+
         public PicrossLineRule Rule { get; }
         public IEnumerable<PicrossLine> CandidateSolutions { get; private set; }
+        public int CandidateCount => CandidateSolutions.Count();
 
         public bool IsValid => CandidateSolutions.Any();
         public bool IsSolved => Rule.CheckSolution(this);
         
-        public PicrossActiveLine(IEnumerable<PicrossCell> cells, PicrossLineRule rule)
+        public PicrossActiveLine(IEnumerable<PicrossCell> cells, PicrossLineRule rule, LineType type, int index)
            : base(cells)
         {
+            Type = type;
+            Index = index;
+
             Rule = rule;
             CandidateSolutions = Rule.GenerateCandidates();
             
@@ -56,5 +63,11 @@ namespace PicrossSolverLibrary
                 Cells.ElementAt(cellIndex).State = solution.Cells.ElementAt(cellIndex).State;
             }
         }
+    }
+
+    public enum LineType
+    {
+        Column,
+        Row
     }
 }
