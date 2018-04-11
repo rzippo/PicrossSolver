@@ -8,6 +8,7 @@ namespace PicrossSolverLibrary
     public class PicrossLine
     {
         public IEnumerable<PicrossCell> Cells { get; }
+        public int Length => Cells.Count();
 
         public PicrossLine(IEnumerable<PicrossCell> cells)
         {

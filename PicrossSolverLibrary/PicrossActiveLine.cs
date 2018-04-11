@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -17,7 +18,7 @@ namespace PicrossSolverLibrary
         public PicrossLineRule Rule { get; }
         public IEnumerable<PicrossLine> CandidateSolutions { get; private set; }
 
-        public bool IsValid => Rule.Validate(this);
+        public bool IsValid => CandidateSolutions.Any();
         public bool IsSolved => Rule.CheckSolution(this);
         
         public PicrossActiveLine(IEnumerable<PicrossCell> cells, PicrossLineRule rule)
@@ -43,6 +44,17 @@ namespace PicrossSolverLibrary
         {
             var survivingCandidates = CandidateSolutions.Where(candidate => candidate.IsCandidate(Cells));
             CandidateSolutions = survivingCandidates;
+        }
+
+        public void ApplySolution(PicrossLine solution)
+        {
+            if(solution.Length != Length)
+                throw new ArgumentException();
+
+            for (int cellIndex = 0; cellIndex < Length; cellIndex++)
+            {
+                Cells.ElementAt(cellIndex).State = solution.Cells.ElementAt(cellIndex).State;
+            }
         }
     }
 }
