@@ -5,7 +5,9 @@ VisualStudioVersion = 15.0.27428.2015
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PicrossSolverCmd", "PicrossSolverCmd\PicrossSolverCmd.csproj", "{8DA8EA26-9138-4388-BA12-01FE4D0468C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PicrossSolverLibrary", "PicrossSolverLibrary\PicrossSolverLibrary.csproj", "{BC8E49F0-0353-4BA6-8512-BFAF69C09471}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PicrossSolverLibrary", "PicrossSolverLibrary\PicrossSolverLibrary.csproj", "{BC8E49F0-0353-4BA6-8512-BFAF69C09471}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PicrossSolverWPF", "PicrossSolverWPF\PicrossSolverWPF.csproj", "{4436599B-F7D8-4158-85C5-3AAAE964C05B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{BC8E49F0-0353-4BA6-8512-BFAF69C09471}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC8E49F0-0353-4BA6-8512-BFAF69C09471}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC8E49F0-0353-4BA6-8512-BFAF69C09471}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4436599B-F7D8-4158-85C5-3AAAE964C05B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4436599B-F7D8-4158-85C5-3AAAE964C05B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4436599B-F7D8-4158-85C5-3AAAE964C05B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4436599B-F7D8-4158-85C5-3AAAE964C05B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
