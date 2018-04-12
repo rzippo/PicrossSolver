@@ -113,7 +113,7 @@ namespace PicrossSolverLibrary
             return GenerateLinesFromGapStructures(generatedGaps);
         }
 
-        private IEnumerable<Tuple<int, int>> GetGapRules()
+        protected IEnumerable<Tuple<int, int>> GetGapRules()
         {
             int voidsToAllocate = LineLength - FilledCells - MinGaps;
             var gapRules = new List<Tuple<int, int>>();
@@ -131,7 +131,7 @@ namespace PicrossSolverLibrary
             return gapRules;
         }
 
-        private IEnumerable<IEnumerable<int>> GenerateGapStructures(IEnumerable<Tuple<int, int>> gapRules)
+        protected IEnumerable<IEnumerable<int>> GenerateGapStructures(IEnumerable<Tuple<int, int>> gapRules)
         {
             if(gapRules.Count() == 0)
                 return new List<IEnumerable<int>>() {new List<int>()};
@@ -153,7 +153,7 @@ namespace PicrossSolverLibrary
             return gapStructures;
         }
 
-        private IEnumerable<PicrossLine> GenerateLinesFromGapStructures(IEnumerable<IEnumerable<int>> gapStructures)
+        protected IEnumerable<PicrossLine> GenerateLinesFromGapStructures(IEnumerable<IEnumerable<int>> gapStructures)
         {
             var lines = new List<PicrossLine>();
             foreach (var gapStructure in gapStructures)
