@@ -11,6 +11,7 @@ namespace PicrossSolverLibrary
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public bool IsValid => ActiveLines.All(activeLine => activeLine.IsValid);
+        public bool IsSet => ActiveLines.All(activeLine => activeLine.IsSet);
         public bool IsSolved => ActiveLines.All(activeLine => activeLine.IsSolved);
 
         public void Solve(bool speculative = false, bool verbose = false)
@@ -32,7 +33,7 @@ namespace PicrossSolverLibrary
             if (IsValid && !IsSolved)
             {
                 var undeterminedLines = ActiveLines
-                    .Where(line => line.CandidateCount > 1);
+                    .Where(line => !line.IsSet);
 
                 PicrossActiveLine speculationTarget = undeterminedLines
                     .First(line => line.CandidateCount ==
@@ -72,13 +73,13 @@ namespace PicrossSolverLibrary
 
         public void BasicSolve()
         {
-            var solvableLines = ActiveLines.Where(line => !line.IsSolved && line.CandidateCount == 1);
+            var solvableLines = ActiveLines.Where(line => !line.IsSet && line.CandidateCount == 1);
             while (solvableLines.Any() && IsValid)
             {
                 foreach (PicrossActiveLine solvableLine in solvableLines)
                     solvableLine.ApplyLine(solvableLine.CandidateSolutions.First());
 
-                solvableLines = ActiveLines.Where(line => !line.IsSolved && line.CandidateCount == 1);
+                solvableLines = ActiveLines.Where(line => !line.IsSet && line.CandidateCount == 1);
             }
         }
         
@@ -102,6 +103,7 @@ namespace PicrossSolverLibrary
             StringBuilder sb = new StringBuilder();
             sb.AppendLine();
             sb.AppendLine($"IsValid {IsValid}");
+            sb.AppendLine($"IsSet {IsSet}");
             sb.AppendLine($"IsSolved {IsSolved}");
             sb.AppendLine();
 

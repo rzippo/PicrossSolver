@@ -147,17 +147,16 @@ namespace PicrossSolverLibrary
             }
         }
 
-        public void And(PicrossLine other)
+        public void And(PicrossLine otherLine)
         {
-            var filledIndexes = Enumerable.Range(0, Length)
-                .Where(i => Cells.ElementAt(i).State == PicrossCellState.Filled);
+            if (Length != otherLine.Length)
+                throw new ArgumentException();
 
-            var incompatibleCellIndexes = filledIndexes
-                .Where(i => other.Cells.ElementAt(i).State == PicrossCellState.Void);
-
-            foreach (int incompatibleIndex in incompatibleCellIndexes)
+            for (int i = 0; i < Length; i++)
             {
-                Cells.ElementAt(incompatibleIndex).State = PicrossCellState.Void;
+                var cell = Cells.ElementAt(i);
+                var otherCell = otherLine.Cells.ElementAt(i);
+                cell.State = cell.State.And(otherCell.State);
             }
         }
 
@@ -166,10 +165,18 @@ namespace PicrossSolverLibrary
             StringBuilder sb = new StringBuilder();
             foreach (PicrossCell cell in Cells)
             {
-                if (cell.State == PicrossCellState.Void)
-                    sb.Append(" _ ");
-                if (cell.State == PicrossCellState.Filled)
-                    sb.Append(" ■ ");
+                switch(cell.State)
+                {
+                    case PicrossCellState.Undetermined:
+                        sb.Append(" ? ");
+                        break;
+                    case PicrossCellState.Void:
+                        sb.Append("   ");
+                        break;
+                    case PicrossCellState.Filled:
+                        sb.Append(" ■ ");
+                        break;
+                }
             }
             sb.AppendLine();
             return sb.ToString();
