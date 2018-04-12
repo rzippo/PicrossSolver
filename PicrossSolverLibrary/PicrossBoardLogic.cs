@@ -15,8 +15,14 @@ namespace PicrossSolverLibrary
 
         public void Solve(bool speculative = false, bool verbose = false)
         {
-            if(!speculative)
+            if (!speculative)
+            {
                 log.Info("Start solving" + (verbose ? " with verbose option enabled" : ""));
+
+                SureCellsPass();
+                if (verbose)
+                    Console.Write(Print());
+            }
             
             if(verbose)
                 DebugSolve();
@@ -30,7 +36,7 @@ namespace PicrossSolverLibrary
 
                 PicrossActiveLine speculationTarget = undeterminedLines
                     .First(line => line.CandidateCount ==
-                                undeterminedLines.Min(l => l.CandidateCount));
+                                undeterminedLines.Max(l => l.CandidateCount));  //todo: review this criteria. Max reduces memory footprint
 
                 Random rng = new Random();
                 var candidateSolutions = speculationTarget.CandidateSolutions
@@ -55,18 +61,27 @@ namespace PicrossSolverLibrary
             }
         }
 
+        //todo: find better name
+        private void SureCellsPass()
+        {
+            foreach(var line in ActiveLines)
+            {
+                line.ApplyLine(line.GetSureCells());
+            }
+        }
+
         public void BasicSolve()
         {
             var solvableLines = ActiveLines.Where(line => !line.IsSolved && line.CandidateCount == 1);
             while (solvableLines.Any() && IsValid)
             {
                 foreach (PicrossActiveLine solvableLine in solvableLines)
-                    solvableLine.ApplySolution(solvableLine.CandidateSolutions.First());
+                    solvableLine.ApplyLine(solvableLine.CandidateSolutions.First());
 
                 solvableLines = ActiveLines.Where(line => !line.IsSolved && line.CandidateCount == 1);
             }
         }
-
+        
         public void DebugSolve()
         {
             Console.Write(Print());
@@ -75,7 +90,7 @@ namespace PicrossSolverLibrary
             while (solvableLines.Any() && IsValid)
             {
                 foreach (PicrossActiveLine solvableLine in solvableLines)
-                    solvableLine.ApplySolution(solvableLine.CandidateSolutions.First());
+                    solvableLine.ApplyLine(solvableLine.CandidateSolutions.First());
 
                 Console.Write(Print());
                 solvableLines = ActiveLines.Where(line => !line.IsSolved && line.CandidateCount == 1);
