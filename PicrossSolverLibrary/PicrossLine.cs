@@ -137,14 +137,12 @@ namespace PicrossSolverLibrary
         public bool IsCandidate(IEnumerable<PicrossCell> activeLine)
         {
             if (activeLine.Count() != Cells.Count())
-                return false;
-            else
-            {
-                var activeLineFilledIndexes = Enumerable.Range(0, activeLine.Count() - 1)
-                    .Where(lineIndex => activeLine.ElementAt(lineIndex) == PicrossCellState.Filled);
+                throw new ArgumentException();
 
-                return activeLineFilledIndexes.All(lineIndex => Cells.ElementAt(lineIndex) == PicrossCellState.Filled);
-            }
+            var activeLineDeterminedIndexes = Enumerable.Range(0, activeLine.Count() - 1)
+                .Where(lineIndex => activeLine.ElementAt(lineIndex) != PicrossCellState.Undetermined);
+
+            return activeLineDeterminedIndexes.All(lineIndex => Cells.ElementAt(lineIndex) == activeLine.ElementAt(lineIndex).State);
         }
 
         public void And(PicrossLine otherLine)
