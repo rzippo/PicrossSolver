@@ -115,7 +115,7 @@ namespace PicrossSolverLibrary
                 return false;
             else
             {
-                var activeLineFilledIndexes = Enumerable.Range(0, activeLine.Count())
+                var activeLineFilledIndexes = Enumerable.Range(0, activeLine.Count() - 1)
                     .Where(lineIndex => activeLine.ElementAt(lineIndex) == PicrossCellState.Filled);
 
                 return activeLineFilledIndexes.All(lineIndex => Cells.ElementAt(lineIndex) == PicrossCellState.Filled);

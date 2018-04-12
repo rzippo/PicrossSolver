@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -56,6 +57,52 @@ namespace PicrossSolverLibrary
 
                 solvableLines = ActiveLines.Where(line => line.CandidateCount == 1);
             }
+        }
+
+        public void DebugSolve()
+        {
+            using (FileStream fs = new FileStream("log.txt", FileMode.CreateNew))
+            {
+                using (StreamWriter sw = new StreamWriter(fs)
+                {
+                    AutoFlush = true
+                })
+                {
+                    sw.Write(Print());
+
+                    var solvableLines = ActiveLines.Where(line => !line.IsSolved && line.CandidateCount == 1);
+                    while (solvableLines.Any() && IsValid)
+                    {
+                        foreach (PicrossActiveLine solvableLine in solvableLines)
+                            solvableLine.ApplySolution(solvableLine.CandidateSolutions.First());
+
+                        sw.Write(Print());
+
+                        solvableLines = ActiveLines.Where(line => line.CandidateCount == 1);
+                    }
+                }
+            }
+        }
+
+        public string Print()
+        {
+            string print = "\n";
+            print += $"IsValid {IsValid}\n";
+            print += $"IsSolved {IsSolved}\n";
+            print += $"\n";
+
+            foreach (var row in Rows)
+            {
+                foreach (PicrossCell cell in row.Cells)
+                {
+                    if (cell.State == PicrossCellState.Void)
+                        print += " _ ";
+                    if (cell.State == PicrossCellState.Filled)
+                        print += " ■ ";
+                }
+                print += "\n";
+            }
+            return print;
         }
     }
 }

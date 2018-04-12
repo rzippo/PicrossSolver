@@ -79,11 +79,11 @@ namespace PicrossSolverLibrary
         public bool Validate(PicrossLine line)
         {
             var lineBlocks = line.ComputeBlocks();
-            if (BlockCount == lineBlocks.Count())
+            if (BlockCount <= lineBlocks.Count())
                 return false;
             else
             {
-                return Enumerable.Range(0, BlockCount).All(blockIndex =>
+                return Enumerable.Range(0, lineBlocks.Count() - 1).All(blockIndex =>
                     lineBlocks.ElementAt(blockIndex) <= BlocksRule.ElementAt(blockIndex));
             }
         }
@@ -91,11 +91,11 @@ namespace PicrossSolverLibrary
         public bool CheckSolution(PicrossLine line)
         {
             var lineBlocks = line.ComputeBlocks();
-            if (BlockCount == lineBlocks.Count())
+            if (BlockCount != lineBlocks.Count())
                 return false;
             else
             {
-                return Enumerable.Range(0, BlockCount).All(blockIndex =>
+                return Enumerable.Range(0, lineBlocks.Count() - 1).All(blockIndex =>
                     lineBlocks.ElementAt(blockIndex) == BlocksRule.ElementAt(blockIndex));
             }
         }
