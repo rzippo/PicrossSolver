@@ -8,12 +8,20 @@ namespace PicrossSolverLibrary
 {
     public partial class PicrossBoard
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public bool IsValid => ActiveLines.All(activeLine => activeLine.IsValid);
         public bool IsSolved => ActiveLines.All(activeLine => activeLine.IsSolved);
 
-        public void Solve()
+        public void Solve(bool speculative = false, bool verbose = false)
         {
-            BasicSolve();
+            if(!speculative)
+                log.Info("Start solving" + (verbose ? " with verbose option enabled" : ""));
+            
+            if(verbose)
+                DebugSolve();
+            else
+                BasicSolve();
 
             if (IsValid && !IsSolved)
             {
@@ -37,7 +45,7 @@ namespace PicrossSolverLibrary
                         candidateToSet: candidateSolution
                     );
 
-                    speculativeBoard.Solve();
+                    speculativeBoard.Solve(speculative: true);
                     if (speculativeBoard.IsValid && speculativeBoard.IsSolved)
                     {
                         this.Copy(speculativeBoard);
@@ -55,32 +63,22 @@ namespace PicrossSolverLibrary
                 foreach (PicrossActiveLine solvableLine in solvableLines)
                     solvableLine.ApplySolution(solvableLine.CandidateSolutions.First());
 
-                solvableLines = ActiveLines.Where(line => line.CandidateCount == 1);
+                solvableLines = ActiveLines.Where(line => !line.IsSolved && line.CandidateCount == 1);
             }
         }
 
         public void DebugSolve()
         {
-            using (FileStream fs = new FileStream("log.txt", FileMode.CreateNew))
+            Console.Write(Print());
+
+            var solvableLines = ActiveLines.Where(line => !line.IsSolved && line.CandidateCount == 1);
+            while (solvableLines.Any() && IsValid)
             {
-                using (StreamWriter sw = new StreamWriter(fs)
-                {
-                    AutoFlush = true
-                })
-                {
-                    sw.Write(Print());
+                foreach (PicrossActiveLine solvableLine in solvableLines)
+                    solvableLine.ApplySolution(solvableLine.CandidateSolutions.First());
 
-                    var solvableLines = ActiveLines.Where(line => !line.IsSolved && line.CandidateCount == 1);
-                    while (solvableLines.Any() && IsValid)
-                    {
-                        foreach (PicrossActiveLine solvableLine in solvableLines)
-                            solvableLine.ApplySolution(solvableLine.CandidateSolutions.First());
-
-                        sw.Write(Print());
-
-                        solvableLines = ActiveLines.Where(line => line.CandidateCount == 1);
-                    }
-                }
+                Console.Write(Print());
+                solvableLines = ActiveLines.Where(line => !line.IsSolved && line.CandidateCount == 1);
             }
         }
 
