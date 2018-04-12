@@ -40,6 +40,18 @@ namespace PicrossSolverLibrary
             }
             Cells = cells;
         }
+
+        public PicrossLine(PicrossLine other)
+        {
+            var cells = new PicrossCell[other.Length];
+            for (int i = 0; i < Length; i++)
+            {
+                cells[i] = new PicrossCell()
+                {
+                    State = other.Cells.ElementAt(i).State
+                };
+            }
+        }
         
         public PicrossLine(IEnumerable<int> blocksRule, IEnumerable<int> gap)
         {
