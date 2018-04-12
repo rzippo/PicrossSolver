@@ -30,13 +30,19 @@
                 Load
             </Button>
             <Button
-                Name="Solve">
+                Name="Solve" Click="Solve_Click">
                 Solve
             </Button>
         </StackPanel>
         <DataGrid
             Name="BoardView"
-            Grid.Row="1">
+            Grid.Row="1"
+            Visibility="Hidden">
         </DataGrid>
+        <TextBlock
+            Name="TextBoardView"
+            Grid.Row="1">
+        </TextBlock>
+        
     </Grid>
 </Window>
