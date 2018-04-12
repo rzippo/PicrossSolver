@@ -84,23 +84,17 @@ namespace PicrossSolverLibrary
 
         public string Print()
         {
-            string print = "\n";
-            print += $"IsValid {IsValid}\n";
-            print += $"IsSolved {IsSolved}\n";
-            print += $"\n";
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine();
+            sb.AppendLine($"IsValid {IsValid}");
+            sb.AppendLine($"IsSolved {IsSolved}");
+            sb.AppendLine();
 
             foreach (var row in Rows)
             {
-                foreach (PicrossCell cell in row.Cells)
-                {
-                    if (cell.State == PicrossCellState.Void)
-                        print += " _ ";
-                    if (cell.State == PicrossCellState.Filled)
-                        print += " ■ ";
-                }
-                print += "\n";
+                sb.Append(row.Print());
             }
-            return print;
+            return sb.ToString();
         }
     }
 }

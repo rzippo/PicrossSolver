@@ -121,5 +121,19 @@ namespace PicrossSolverLibrary
                 return activeLineFilledIndexes.All(lineIndex => Cells.ElementAt(lineIndex) == PicrossCellState.Filled);
             }
         }
+
+        public string Print()
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (PicrossCell cell in Cells)
+            {
+                if (cell.State == PicrossCellState.Void)
+                    sb.Append(" _ ");
+                if (cell.State == PicrossCellState.Filled)
+                    sb.Append(" ■ ");
+            }
+            sb.AppendLine();
+            return sb.ToString();
+        }
     }
 }
