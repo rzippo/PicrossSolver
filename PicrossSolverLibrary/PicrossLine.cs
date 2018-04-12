@@ -13,13 +13,14 @@ namespace PicrossSolverLibrary
         public PicrossLine(int length, PicrossCellState state)
         {
             var cells = new PicrossCell[length];
-            for (int i = 0; i < Length; i++)
+            for (int i = 0; i < length; i++)
             {
                 cells[i] = new PicrossCell()
                 {
                     State = state
                 };
             }
+            Cells = cells;
         }
     
         public PicrossLine(IEnumerable<PicrossCell> cells)
