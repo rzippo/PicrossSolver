@@ -13,9 +13,9 @@ namespace PicrossSolverLibrary.UnitTests.LineRuleTests
             return base.GetGapRules();
         }
 
-        public new IEnumerable<IEnumerable<int>> GenerateGapStructures(IEnumerable<Tuple<int, int>> gapRules)
+        public new IEnumerable<IEnumerable<int>> GenerateGapStructures(IEnumerable<Tuple<int, int>> gapRules, int gapsToBeAllocated)
         {
-            return base.GenerateGapStructures(gapRules);
+            return base.GenerateGapStructures(gapRules, gapsToBeAllocated);
         }
     }
 }

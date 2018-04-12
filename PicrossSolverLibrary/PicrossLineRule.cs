@@ -13,8 +13,9 @@ namespace PicrossSolverLibrary
         public int BlockCount => BlocksRule.Count;
         public int InnerBlockCount => BlockCount - 2;
 
-        public int FilledCells => BlocksRule.Sum();
-        public int MinRequiredSpace => FilledCells + MinGaps;
+        public int FilledCellCount => BlocksRule.Sum();
+        public int VoidCellCount => LineLength - FilledCellCount;
+        public int MinRequiredSpace => FilledCellCount + MinGaps;
 
         public int MinGaps
         {
@@ -22,7 +23,7 @@ namespace PicrossSolverLibrary
             {
                 if(BlockCount == 1)
                 {
-                    return FilledCells == LineLength ? 0 : 1;
+                    return FilledCellCount == LineLength ? 0 : 1;
                 }
                 else
                 {
@@ -109,13 +110,13 @@ namespace PicrossSolverLibrary
                 };
 
             var gapRules = GetGapRules();
-            var generatedGaps = GenerateGapStructures(gapRules);
+            var generatedGaps = GenerateGapStructures(gapRules, VoidCellCount);
             return GenerateLinesFromGapStructures(generatedGaps);
         }
 
         protected IEnumerable<Tuple<int, int>> GetGapRules()
         {
-            int voidsToAllocate = LineLength - FilledCells - MinGaps;
+            int voidsToAllocate = LineLength - FilledCellCount - MinGaps;
             var gapRules = new List<Tuple<int, int>>();
 
             //Left outer gap
@@ -131,24 +132,42 @@ namespace PicrossSolverLibrary
             return gapRules;
         }
 
-        protected IEnumerable<IEnumerable<int>> GenerateGapStructures(IEnumerable<Tuple<int, int>> gapRules)
+        protected IEnumerable<IEnumerable<int>> GenerateGapStructures(IEnumerable<Tuple<int, int>> gapRules, int gapsToBeAllocated)
         {
-            if(gapRules.Count() == 0)
-                return new List<IEnumerable<int>>() {new List<int>()};
+            if (gapRules.Sum(gapRule => gapRule.Item2) < gapsToBeAllocated)
+                return null;
 
             var gapStructures = new List<IEnumerable<int>>();
             var headRule = gapRules.First();
-            foreach (int headValue in Enumerable.Range(headRule.Item1, headRule.Item2))
+            var headValues = Enumerable.Range(
+                headRule.Item1,
+                (headRule.Item2 - headRule.Item1) + 1);
+
+            foreach (int headValue in headValues)
             {
                 var innerGapRules = gapRules.Skip(1);
-                var innerGaps = GenerateGapStructures(innerGapRules);
-
-                foreach (var innerGap in innerGaps)
+                int nextGapsToBeAllocated = gapsToBeAllocated - headValue;
+                if (nextGapsToBeAllocated >= 0)
                 {
-                    var gapStructure = new List<int>() {headValue};
-                    gapStructure.AddRange(innerGap);
-                    gapStructures.Add(gapStructure);
-                }    
+                    if (innerGapRules.Count() == 1)
+                    {
+                        var gapStructure = new List<int>() {headValue, nextGapsToBeAllocated};
+                        gapStructures.Add(gapStructure);
+                    }
+                    else
+                    {
+                        var innerGaps = GenerateGapStructures(innerGapRules, nextGapsToBeAllocated);
+                        if (innerGaps != null)
+                        {
+                            foreach (var innerGap in innerGaps)
+                            {
+                                var gapStructure = new List<int>() {headValue};
+                                gapStructure.AddRange(innerGap);
+                                gapStructures.Add(gapStructure);
+                            }
+                        }
+                    }
+                }
             }
             return gapStructures;
         }
