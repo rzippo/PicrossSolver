@@ -63,14 +63,7 @@ namespace PicrossSolver
 
             Board = new PicrossBoard(Puzzle);
             Console.WriteLine("Board loaded, next is solving...");
-            if (opts.Verbose)
-            {
-                Board.DebugSolve();
-            }
-            else
-            {
-                Board.Solve();
-            }
+            Board.Solve(verbose: opts.Verbose);
             Console.WriteLine("Solving complete, result:");
             Console.Write(Board.Print());
 
