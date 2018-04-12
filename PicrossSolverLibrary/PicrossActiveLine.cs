@@ -64,14 +64,14 @@ namespace PicrossSolverLibrary
             return sureCells;
         }
 
-        public void ApplySolution(PicrossLine solution)
+        public void ApplyLine(PicrossLine line)
         {
-            if(solution.Length != Length)
+            if(line.Length != Length)
                 throw new ArgumentException();
 
             for (int cellIndex = 0; cellIndex < Length; cellIndex++)
             {
-                Cells.ElementAt(cellIndex).State = solution.Cells.ElementAt(cellIndex).State;
+                Cells.ElementAt(cellIndex).State = line.Cells.ElementAt(cellIndex).State;
             }
         }
     }
