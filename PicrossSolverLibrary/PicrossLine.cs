@@ -10,6 +10,18 @@ namespace PicrossSolverLibrary
         public IEnumerable<PicrossCell> Cells { get; }
         public int Length => Cells.Count();
 
+        public PicrossLine(int length, PicrossCellState state)
+        {
+            var cells = new PicrossCell[length];
+            for (int i = 0; i < Length; i++)
+            {
+                cells[i] = new PicrossCell()
+                {
+                    State = state
+                };
+            }
+        }
+    
         public PicrossLine(IEnumerable<PicrossCell> cells)
         {
             Cells = cells;
@@ -119,6 +131,20 @@ namespace PicrossSolverLibrary
                     .Where(lineIndex => activeLine.ElementAt(lineIndex) == PicrossCellState.Filled);
 
                 return activeLineFilledIndexes.All(lineIndex => Cells.ElementAt(lineIndex) == PicrossCellState.Filled);
+            }
+        }
+
+        public void And(PicrossLine other)
+        {
+            var filledIndexes = Enumerable.Range(0, Length)
+                .Where(i => Cells.ElementAt(i).State == PicrossCellState.Filled);
+
+            var incompatibleCellIndexes = filledIndexes
+                .Where(i => other.Cells.ElementAt(i).State == PicrossCellState.Void);
+
+            foreach (int incompatibleIndex in incompatibleCellIndexes)
+            {
+                Cells.ElementAt(incompatibleIndex).State = PicrossCellState.Void;
             }
         }
 

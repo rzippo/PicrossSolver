@@ -53,6 +53,17 @@ namespace PicrossSolverLibrary
             CandidateSolutions = survivingCandidates;
         }
 
+        //todo: find better name
+        public PicrossLine GetSureCells()
+        {
+            PicrossLine sureCells = new PicrossLine(Length, PicrossCellState.Filled);
+            foreach (var candidateSolution in CandidateSolutions)
+            {
+                sureCells.And(candidateSolution);
+            }
+            return sureCells;
+        }
+
         public void ApplySolution(PicrossLine solution)
         {
             if(solution.Length != Length)
