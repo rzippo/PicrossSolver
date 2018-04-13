@@ -2,13 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
-using PicrossSolverLibrary;
 
 namespace PicrossSolverLibrary.UnitTests.LineRuleTests
 {
     public class PicrossLineRule_GetGapRules
     {
-
         [Fact]
         public void GapRulesOf_5_3_l10()
         {
