@@ -98,7 +98,7 @@ namespace PicrossSolverWPF
 
         private void Solve_Click(object sender, RoutedEventArgs e)
         {
-            Board.DebugSolve();
+            Board.Solve();
             MessageBox.Show("Ok");
         }
     }
