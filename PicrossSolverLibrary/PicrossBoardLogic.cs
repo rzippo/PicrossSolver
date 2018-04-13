@@ -6,6 +6,20 @@ using System.Text;
 
 namespace PicrossSolverLibrary
 {
+    public class SpeculativeCallContext
+    {
+        public int depth;
+        public int optionIndex;
+        public int optionsCount;
+    }
+
+    public enum VerboseLevel
+    {
+        Silent,
+        StartDeclaration,
+        StepByStep
+    }
+
     public partial class PicrossBoard
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -13,12 +27,17 @@ namespace PicrossSolverLibrary
         public bool IsValid => ActiveLines.All(activeLine => activeLine.IsValid);
         public bool IsSolved => ActiveLines.All(activeLine => activeLine.IsSolved);
 
-        public void Solve(bool speculative = false, bool verbose = false)
+        public void Solve(
+            VerboseLevel verboseLevel = VerboseLevel.Silent,
+            SpeculativeCallContext context = null)
         {
-            if(!speculative)
-                log.Info("Start solving" + (verbose ? " with verbose option enabled" : ""));
+            if(verboseLevel != VerboseLevel.Silent)
+                log.Info("Start solving " + 
+                    (context == null ? 
+                        "main board" 
+                        : $"speculative board of depth {context.depth}, option {context.optionIndex} of {context.optionsCount}"));
             
-            if(verbose)
+            if(verboseLevel == VerboseLevel.StepByStep)
                 DebugSolve();
             else
                 BasicSolve();
@@ -35,17 +54,25 @@ namespace PicrossSolverLibrary
                 Random rng = new Random();
                 var candidateSolutions = speculationTarget.CandidateSolutions
                     .OrderBy(cs => rng.Next());
+                int candidatesCount = candidateSolutions.Count();
 
-                foreach (var candidateSolution in candidateSolutions)
+                for (int i = 0; i < candidatesCount; i++)
                 {
                     PicrossBoard speculativeBoard = new PicrossBoard(this);
                     speculativeBoard.SetLineSolution(
                         lineType: speculationTarget.Type,
                         lineIndex: speculationTarget.Index,
-                        candidateToSet: candidateSolution
+                        candidateToSet: candidateSolutions.ElementAt(i)
                     );
-
-                    speculativeBoard.Solve(speculative: true);
+                    
+                    SpeculativeCallContext speculativeContext = new SpeculativeCallContext()
+                    {
+                        depth = context == null ? 1 : context.depth + 1,
+                        optionIndex = i,
+                        optionsCount = candidatesCount
+                    };
+                        
+                    speculativeBoard.Solve(verboseLevel, speculativeContext);
                     if (speculativeBoard.IsValid && speculativeBoard.IsSolved)
                     {
                         this.Copy(speculativeBoard);
