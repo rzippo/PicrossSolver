@@ -5,73 +5,12 @@ using System.Text;
 
 namespace PicrossSolverLibrary
 {
-    public class PicrossLine
+    public partial class PicrossLine
     {
         public IEnumerable<PicrossCell> Cells { get; }
         public int Length => Cells.Count();
 
-        public PicrossLine(int length, PicrossCellState state)
-        {
-            var cells = new PicrossCell[length];
-            for (int i = 0; i < length; i++)
-            {
-                cells[i] = new PicrossCell()
-                {
-                    State = state
-                };
-            }
-            Cells = cells;
-        }
-    
-        public PicrossLine(IEnumerable<PicrossCell> cells)
-        {
-            Cells = cells;
-        }
-
-        public PicrossLine(IEnumerable<PicrossCellState> cellStates)
-        {
-            var cells = new List<PicrossCell>();
-            foreach (var cellState in cellStates)
-            {
-                cells.Add(new PicrossCell()
-                {
-                    State = cellState
-                });
-            }
-            Cells = cells;
-        }
-
-        public PicrossLine(PicrossLine other)
-        {
-            var cells = new PicrossCell[other.Length];
-            for (int i = 0; i < Length; i++)
-            {
-                cells[i] = new PicrossCell()
-                {
-                    State = other.Cells.ElementAt(i).State
-                };
-            }
-        }
-        
-        public PicrossLine(IEnumerable<int> blocksRule, IEnumerable<int> gap)
-        {
-            if(gap.Count() != blocksRule.Count() + 1)
-                throw new ArgumentException();
-
-            var cells = new List<PicrossCell>();
-
-            for (int pairIndex = 0; pairIndex < blocksRule.Count(); pairIndex++)
-            {
-                cells.AddRange(FillGap(gap.ElementAt(pairIndex)));
-                cells.AddRange(FillBlock(blocksRule.ElementAt(pairIndex)));
-            }
-
-            cells.AddRange(FillGap(gap.Last()));
-
-            Cells = cells;
-        }
-
-        private IEnumerable<PicrossCell> FillGap(int gapSize)
+        private static IEnumerable<PicrossCell> FillGap(int gapSize)
         {
             var cells = new List<PicrossCell>();
 
@@ -85,7 +24,7 @@ namespace PicrossSolverLibrary
             return cells;
         }
 
-        private IEnumerable<PicrossCell> FillBlock(int blockSize)
+        private static IEnumerable<PicrossCell> FillBlock(int blockSize)
         {
             var cells = new List<PicrossCell>();
 
@@ -130,8 +69,7 @@ namespace PicrossSolverLibrary
 
             return lineBlocks;
         }
-
-
+        
         //This function should check if this line is a valid speculative candidate for the line we pass as a parameter
         //This does not count validity - we suppose that the speculative line was generated from the rule
         public bool IsCandidate(IEnumerable<PicrossCell> activeLine)
