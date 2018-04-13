@@ -80,7 +80,7 @@ namespace PicrossSolverLibrary
             var activeLineDeterminedIndexes = Enumerable.Range(0, activeLine.Count() - 1)
                 .Where(lineIndex => activeLine.ElementAt(lineIndex) != PicrossCellState.Undetermined);
 
-            return activeLineDeterminedIndexes.All(lineIndex => Cells.ElementAt(lineIndex) == activeLine.ElementAt(lineIndex).State);
+            return activeLineDeterminedIndexes.All(lineIndex => Cells.ElementAt(lineIndex).State == activeLine.ElementAt(lineIndex).State);
         }
 
         public void And(PicrossLine otherLine)

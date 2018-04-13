@@ -111,16 +111,16 @@ namespace PicrossSolverLibrary
 
         private PicrossActiveLine[] GatherRows()
         {
-            var rows = new PicrossActiveLine[ColumnCount];
+            var rows = new PicrossActiveLine[RowCount];
 
-            for (int rowIndex = 0; rowIndex < ColumnCount; rowIndex++)
+            for (int rowIndex = 0; rowIndex < RowCount; rowIndex++)
             {
                 var rowCells = new List<PicrossCell>();
                 for (int columnIndex = 0; columnIndex < ColumnCount; columnIndex++)
                     rowCells.Add(Matrix[rowIndex, columnIndex]);
 
                 var rowRule =
-                    new PicrossLineRule(Puzzle.RowRules[rowIndex], RowCount);
+                    new PicrossLineRule(Puzzle.RowRules[rowIndex], ColumnCount);
 
                 rows[rowIndex] = new PicrossActiveLine(
                     type: LineType.Row,
@@ -134,10 +134,8 @@ namespace PicrossSolverLibrary
 
         private void SetLineSolution(LineType lineType, int lineIndex, PicrossLine candidateToSet)
         {
-            PicrossActiveLine target;
-            target = lineType == LineType.Column ?
-                Columns.First(line => line.Index == lineIndex) 
-                : Rows.First(line => line.Index == lineIndex);
+            var targetSet = lineType == LineType.Column ? Columns : Rows;
+            PicrossActiveLine target = targetSet.First(line => line.Index == lineIndex);
 
             target.ApplyLine(candidateToSet);
         }

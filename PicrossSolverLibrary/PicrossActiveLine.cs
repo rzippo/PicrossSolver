@@ -34,6 +34,7 @@ namespace PicrossSolverLibrary
 
             Rule = rule;
             CandidateSolutions = Rule.GenerateCandidates();
+            ReviewCandidates();
             
             foreach(PicrossCell cell in Cells)
             {
@@ -46,8 +47,6 @@ namespace PicrossSolverLibrary
             ReviewCandidates();
         }
 
-        //todo: how to propagate speculation failed error?
-        //note: this is assuming that cells only change Void->Filled
         private void ReviewCandidates()
         {
             var survivingCandidates = CandidateSolutions.Where(candidate => candidate.IsCandidate(Cells));
