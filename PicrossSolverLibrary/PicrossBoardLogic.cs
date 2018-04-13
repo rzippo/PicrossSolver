@@ -91,7 +91,7 @@ namespace PicrossSolverLibrary
                     
                     SpeculativeCallContext speculativeContext = new SpeculativeCallContext()
                     {
-                        depth = context == null ? 1 : context.depth + 1,
+                        depth = context?.depth + 1 ?? 1,
                         optionIndex = i,
                         optionsCount = candidatesCount
                     };

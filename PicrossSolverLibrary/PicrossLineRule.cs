@@ -65,6 +65,8 @@ namespace PicrossSolverLibrary
                     solution[lineIndex] = PicrossCellState.Filled;
                     lineIndex++;
                 }
+                if (blockIndex < BlockCount - 1)
+                    solution[lineIndex] = PicrossCellState.Void;
                 lineIndex++;
             }
             return solution;
