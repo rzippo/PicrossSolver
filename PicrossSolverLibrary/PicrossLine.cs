@@ -10,6 +10,19 @@ namespace PicrossSolverLibrary
         public IEnumerable<PicrossCell> Cells { get; }
         public int Length => Cells.Count();
 
+        public PicrossLine(int length, PicrossCellState state)
+        {
+            var cells = new PicrossCell[length];
+            for (int i = 0; i < length; i++)
+            {
+                cells[i] = new PicrossCell()
+                {
+                    State = state
+                };
+            }
+            Cells = cells;
+        }
+    
         public PicrossLine(IEnumerable<PicrossCell> cells)
         {
             Cells = cells;
@@ -26,6 +39,18 @@ namespace PicrossSolverLibrary
                 });
             }
             Cells = cells;
+        }
+
+        public PicrossLine(PicrossLine other)
+        {
+            var cells = new PicrossCell[other.Length];
+            for (int i = 0; i < Length; i++)
+            {
+                cells[i] = new PicrossCell()
+                {
+                    State = other.Cells.ElementAt(i).State
+                };
+            }
         }
         
         public PicrossLine(IEnumerable<int> blocksRule, IEnumerable<int> gap)
@@ -112,13 +137,24 @@ namespace PicrossSolverLibrary
         public bool IsCandidate(IEnumerable<PicrossCell> activeLine)
         {
             if (activeLine.Count() != Cells.Count())
-                return false;
-            else
-            {
-                var activeLineFilledIndexes = Enumerable.Range(0, activeLine.Count() - 1)
-                    .Where(lineIndex => activeLine.ElementAt(lineIndex) == PicrossCellState.Filled);
+                throw new ArgumentException();
 
-                return activeLineFilledIndexes.All(lineIndex => Cells.ElementAt(lineIndex) == PicrossCellState.Filled);
+            var activeLineDeterminedIndexes = Enumerable.Range(0, activeLine.Count() - 1)
+                .Where(lineIndex => activeLine.ElementAt(lineIndex) != PicrossCellState.Undetermined);
+
+            return activeLineDeterminedIndexes.All(lineIndex => Cells.ElementAt(lineIndex) == activeLine.ElementAt(lineIndex).State);
+        }
+
+        public void And(PicrossLine otherLine)
+        {
+            if (Length != otherLine.Length)
+                throw new ArgumentException();
+
+            for (int i = 0; i < Length; i++)
+            {
+                var cell = Cells.ElementAt(i);
+                var otherCell = otherLine.Cells.ElementAt(i);
+                cell.State = cell.State.And(otherCell.State);
             }
         }
 
@@ -127,10 +163,18 @@ namespace PicrossSolverLibrary
             StringBuilder sb = new StringBuilder();
             foreach (PicrossCell cell in Cells)
             {
-                if (cell.State == PicrossCellState.Void)
-                    sb.Append(" _ ");
-                if (cell.State == PicrossCellState.Filled)
-                    sb.Append(" ■ ");
+                switch(cell.State)
+                {
+                    case PicrossCellState.Undetermined:
+                        sb.Append(" ? ");
+                        break;
+                    case PicrossCellState.Void:
+                        sb.Append("   ");
+                        break;
+                    case PicrossCellState.Filled:
+                        sb.Append(" ■ ");
+                        break;
+                }
             }
             sb.AppendLine();
             return sb.ToString();

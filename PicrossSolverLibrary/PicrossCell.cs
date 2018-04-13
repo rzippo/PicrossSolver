@@ -15,7 +15,7 @@ namespace PicrossSolverLibrary
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private PicrossCellState state = PicrossCellState.Void;
+        private PicrossCellState state = PicrossCellState.Undetermined;
         public PicrossCellState State
         {
             get => state;

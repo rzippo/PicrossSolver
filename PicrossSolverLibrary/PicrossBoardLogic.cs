@@ -17,7 +17,7 @@ namespace PicrossSolverLibrary
     {
         Silent,
         StartDeclaration,
-        StepByStep
+        StepByStep,
     }
 
     public partial class PicrossBoard
@@ -25,31 +25,55 @@ namespace PicrossSolverLibrary
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public bool IsValid => ActiveLines.All(activeLine => activeLine.IsValid);
+        public bool IsSet => ActiveLines.All(activeLine => activeLine.IsSet);
         public bool IsSolved => ActiveLines.All(activeLine => activeLine.IsSolved);
 
         public void Solve(
             VerboseLevel verboseLevel = VerboseLevel.Silent,
             SpeculativeCallContext context = null)
         {
-            if(verboseLevel != VerboseLevel.Silent)
-                log.Info("Start solving " + 
-                    (context == null ? 
-                        "main board" 
-                        : $"speculative board of depth {context.depth}, option {context.optionIndex} of {context.optionsCount}"));
-            
-            if(verboseLevel == VerboseLevel.StepByStep)
-                DebugSolve();
-            else
-                BasicSolve();
+            if (!IsValid)
+            {
+                if (verboseLevel != VerboseLevel.Silent)
+                {
+                    StringBuilder sb = new StringBuilder("Solving aborted, board invalid - ");
+                    if (context == null)
+                        sb.Append("main board");
+                    else
+                        sb.Append(
+                            $"speculative board of depth {context.depth}, option {context.optionIndex} of {context.optionsCount}");
+                    log.Info(sb);
+                }
+                return;
+            }
 
+            if(verboseLevel != VerboseLevel.Silent)
+            {
+                StringBuilder sb = new StringBuilder("Start solving - ");
+                if (context == null)
+                    sb.Append("main board");
+                else
+                    sb.Append(
+                        $"speculative board of depth {context.depth}, option {context.optionIndex} of {context.optionsCount}");
+                log.Info(sb);
+            }
+            
+            SureCellsPass();
+            if (verboseLevel == VerboseLevel.StepByStep)
+                Print();
+            CandidateExclusionSolve(verboseLevel);
+
+            if (verboseLevel == VerboseLevel.StepByStep)
+                Console.Write(Print());
+            
             if (IsValid && !IsSolved)
             {
                 var undeterminedLines = ActiveLines
-                    .Where(line => line.CandidateCount > 1);
+                    .Where(line => !line.IsSet);
 
                 PicrossActiveLine speculationTarget = undeterminedLines
                     .First(line => line.CandidateCount ==
-                                undeterminedLines.Min(l => l.CandidateCount));
+                                undeterminedLines.Max(l => l.CandidateCount));  //todo: review this criteria. Max reduces memory footprint
 
                 Random rng = new Random();
                 var candidateSolutions = speculationTarget.CandidateSolutions
@@ -82,38 +106,39 @@ namespace PicrossSolverLibrary
             }
         }
 
-        public void BasicSolve()
+        //todo: find better name
+        private void SureCellsPass()
         {
-            var solvableLines = ActiveLines.Where(line => !line.IsSolved && line.CandidateCount == 1);
-            while (solvableLines.Any() && IsValid)
+            foreach(var line in ActiveLines)
             {
-                foreach (PicrossActiveLine solvableLine in solvableLines)
-                    solvableLine.ApplySolution(solvableLine.CandidateSolutions.First());
-
-                solvableLines = ActiveLines.Where(line => !line.IsSolved && line.CandidateCount == 1);
+                line.ApplyLine(line.GetSureCells());
             }
         }
 
-        public void DebugSolve()
+        public void CandidateExclusionSolve(VerboseLevel verboseLevel)
         {
-            Console.Write(Print());
-
-            var solvableLines = ActiveLines.Where(line => !line.IsSolved && line.CandidateCount == 1);
-            while (solvableLines.Any() && IsValid)
-            {
-                foreach (PicrossActiveLine solvableLine in solvableLines)
-                    solvableLine.ApplySolution(solvableLine.CandidateSolutions.First());
-
+            if(verboseLevel == VerboseLevel.StepByStep)
                 Console.Write(Print());
-                solvableLines = ActiveLines.Where(line => !line.IsSolved && line.CandidateCount == 1);
+
+            var solvableLines = ActiveLines.Where(line => !line.IsSet && line.CandidateCount == 1);
+            while (solvableLines.Any() && IsValid)
+            {
+                foreach (PicrossActiveLine solvableLine in solvableLines)
+                    solvableLine.ApplyLine(solvableLine.CandidateSolutions.First());
+
+                if (verboseLevel == VerboseLevel.StepByStep)
+                    Console.Write(Print());
+
+                solvableLines = ActiveLines.Where(line => !line.IsSet && line.CandidateCount == 1);
             }
         }
-
+        
         public string Print()
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine();
             sb.AppendLine($"IsValid {IsValid}");
+            sb.AppendLine($"IsSet {IsSet}");
             sb.AppendLine($"IsSolved {IsSolved}");
             sb.AppendLine();
 

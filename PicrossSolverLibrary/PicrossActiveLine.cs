@@ -23,6 +23,7 @@ namespace PicrossSolverLibrary
         public int CandidateCount => CandidateSolutions.Count();
 
         public bool IsValid => CandidateSolutions.Any();
+        public bool IsSet => Cells.All(cell => cell.State != PicrossCellState.Undetermined);
         public bool IsSolved => Rule.CheckSolution(this);
         
         public PicrossActiveLine(IEnumerable<PicrossCell> cells, PicrossLineRule rule, LineType type, int index)
@@ -53,14 +54,30 @@ namespace PicrossSolverLibrary
             CandidateSolutions = survivingCandidates;
         }
 
-        public void ApplySolution(PicrossLine solution)
+        //todo: find better name
+        public PicrossLine GetSureCells()
         {
-            if(solution.Length != Length)
+            if (IsValid)
+                return new PicrossLine(Length, PicrossCellState.Undetermined);
+
+            PicrossLine sureCells = new PicrossLine(CandidateSolutions.First());
+            foreach (var candidateSolution in CandidateSolutions)
+            {
+                sureCells.And(candidateSolution);
+            }
+            return sureCells;
+        }
+
+        public void ApplyLine(PicrossLine line)
+        {
+            if(line.Length != Length)
                 throw new ArgumentException();
 
             for (int cellIndex = 0; cellIndex < Length; cellIndex++)
             {
-                Cells.ElementAt(cellIndex).State = solution.Cells.ElementAt(cellIndex).State;
+                var newState = line.Cells.ElementAt(cellIndex).State;
+                if (newState != PicrossCellState.Undetermined)
+                    Cells.ElementAt(cellIndex).State = newState;
             }
         }
     }

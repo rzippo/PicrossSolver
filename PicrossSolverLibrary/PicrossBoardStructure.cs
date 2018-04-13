@@ -139,7 +139,7 @@ namespace PicrossSolverLibrary
                 Columns.First(line => line.Index == lineIndex) 
                 : Rows.First(line => line.Index == lineIndex);
 
-            target.ApplySolution(candidateToSet);
+            target.ApplyLine(candidateToSet);
         }
     }
 }
