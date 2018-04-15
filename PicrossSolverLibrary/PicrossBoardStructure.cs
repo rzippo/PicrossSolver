@@ -28,9 +28,9 @@ namespace PicrossSolverLibrary
             ColumnCount = Puzzle.ColumnCount;
 
             Matrix = new PicrossCell[RowCount, ColumnCount];
-            for (int rowIndex = 0; rowIndex < ColumnCount; rowIndex++)
+            for (int rowIndex = 0; rowIndex < RowCount; rowIndex++)
             {
-                for (int columnIndex = 0; columnIndex < RowCount; columnIndex++)
+                for (int columnIndex = 0; columnIndex < ColumnCount; columnIndex++)
                 {
                     Matrix[rowIndex, columnIndex] = new PicrossCell()
                     {
@@ -52,9 +52,9 @@ namespace PicrossSolverLibrary
             ColumnCount = Puzzle.ColumnCount;
 
             Matrix = new PicrossCell[RowCount, ColumnCount];
-            for (int rowIndex = 0; rowIndex < ColumnCount; rowIndex++)
+            for (int rowIndex = 0; rowIndex < RowCount; rowIndex++)
             {
-                for (int columnIndex = 0; columnIndex < RowCount; columnIndex++)
+                for (int columnIndex = 0; columnIndex < ColumnCount; columnIndex++)
                 {
                     PicrossCell otherCell = other.Matrix[rowIndex, columnIndex];
                     Matrix[rowIndex, columnIndex] = new PicrossCell()
@@ -76,9 +76,9 @@ namespace PicrossSolverLibrary
             if (Puzzle != other.Puzzle)
                 throw new ArgumentException();
 
-            for (int rowIndex = 0; rowIndex < ColumnCount; rowIndex++)
+            for (int rowIndex = 0; rowIndex < RowCount; rowIndex++)
             {
-                for (int columnIndex = 0; columnIndex < RowCount; columnIndex++)
+                for (int columnIndex = 0; columnIndex < ColumnCount; columnIndex++)
                 {
                     PicrossCell otherCell = other.Matrix[rowIndex, columnIndex];
                     Matrix[rowIndex, columnIndex].State = otherCell.State;
@@ -97,7 +97,9 @@ namespace PicrossSolverLibrary
                     columnCells.Add(Matrix[rowIndex, columnIndex]);
 
                 var columnRule =
-                    new PicrossLineRule(Puzzle.ColumnRules[columnIndex], RowCount);
+                    new PicrossLineRule(
+                        lineStructure: Puzzle.ColumnRules[columnIndex],
+                        lineLength: RowCount);
 
                 columns[columnIndex] = new PicrossActiveLine(
                     type: LineType.Column,
@@ -120,7 +122,9 @@ namespace PicrossSolverLibrary
                     rowCells.Add(Matrix[rowIndex, columnIndex]);
 
                 var rowRule =
-                    new PicrossLineRule(Puzzle.RowRules[rowIndex], ColumnCount);
+                    new PicrossLineRule(
+                        lineStructure: Puzzle.RowRules[rowIndex], 
+                        lineLength: ColumnCount);
 
                 rows[rowIndex] = new PicrossActiveLine(
                     type: LineType.Row,
