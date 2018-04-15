@@ -11,7 +11,8 @@ namespace PicrossSolverLibrary
         public int LineLength { get; }
 
         public int BlockCount => BlocksRule.Count;
-        public int InnerBlockCount => BlockCount - 2;
+        public int OuterBlockCount => (BlockCount == 1) ? 1 : 2;
+        public int InnerBlockCount => BlockCount - OuterBlockCount;
 
         public int FilledCellCount => BlocksRule.Sum();
         public int VoidCellCount => LineLength - FilledCellCount;
@@ -32,13 +33,15 @@ namespace PicrossSolverLibrary
             }
         }
 
+        public int InnerGapCount => BlockCount == 1 ? 0 : InnerBlockCount + 1;
+
         public int MaxGaps
         {
             get
             {
                 if (MinRequiredSpace < LineLength)
                 {
-                    return MinGaps + Math.Min(LineLength - MinRequiredSpace, 2);
+                    return MinGaps + Math.Min(LineLength - MinRequiredSpace, OuterBlockCount);
                 }
                 else
                 {
@@ -118,14 +121,14 @@ namespace PicrossSolverLibrary
 
         protected IEnumerable<Tuple<int, int>> GetGapRules()
         {
-            int voidsToAllocate = LineLength - FilledCellCount - MinGaps;
+            int voidsToAllocate = LineLength - FilledCellCount - InnerGapCount;
             var gapRules = new List<Tuple<int, int>>();
 
             //Left outer gap
             gapRules.Add(new Tuple<int, int>(0, voidsToAllocate));
 
             //Inner gapStructures
-            for (int innerGapIndex = 0; innerGapIndex < MinGaps; innerGapIndex++)
+            for (int innerGapIndex = 0; innerGapIndex < InnerGapCount; innerGapIndex++)
                 gapRules.Add(new Tuple<int, int>(1, 1 + voidsToAllocate));
 
             //Right outer gap
