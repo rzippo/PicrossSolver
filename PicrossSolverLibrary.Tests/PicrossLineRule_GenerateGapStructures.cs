@@ -56,7 +56,7 @@ namespace PicrossSolverLibrary.UnitTests.LineRuleTests
         [Fact]
         public void GapStructuresOf_5_3_l10()
         {
-            var lineRule = new PicrossLineRuleTester(new[] { 5, 3 }, 10);
+            PicrossLineRuleTester lineRule = new PicrossLineRuleTester(new[] { 5, 3 }, 10);
             var gapRules = lineRule.GetGapRules();
             var gapStructures = lineRule.GenerateGapStructures(gapRules, lineRule.VoidCellCount);
 
