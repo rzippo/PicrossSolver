@@ -4,27 +4,31 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using PicrossSolverLibrary;
 
 namespace PicrossSolverWPF
 {
-    public class PicrossCellView   
+    public class PicrossCellView : DependencyObject 
     {
-        public Rectangle Rectangle { get; set; }
+
+
+        public Brush CellFillBrush
+        {
+            get { return (Brush)GetValue(CellFillBrushProperty); }
+            set { SetValue(CellFillBrushProperty, value); }
+        }
+
+        public static readonly DependencyProperty CellFillBrushProperty =
+            DependencyProperty.Register("CellFillBrush", typeof(Brush), typeof(PicrossCellView), new PropertyMetadata(Brushes.Transparent));
+        
         public PicrossCell Cell { get; set; }
 
         public PicrossCellView(PicrossCell observedCell)
         {
-            Rectangle = new Rectangle()
-            {
-                Height = 5,
-                Width = 5,
-                Stroke = Brushes.Black,
-                StrokeThickness = 1
-            };
-
             Cell = observedCell;
             Cell.PropertyChanged += UpdateRectangle;
         }
@@ -33,13 +37,16 @@ namespace PicrossSolverWPF
         {
             switch (Cell.State)
             {
+                case PicrossCellState.Undetermined:
+                    CellFillBrush = Brushes.Transparent;
+                    break;
                 case PicrossCellState.Void:
-                    Rectangle.Fill = Brushes.White;
+                    CellFillBrush = Brushes.White;
                     break;
                 case PicrossCellState.Filled:
-                    Rectangle.Fill = Brushes.Green;
+                    CellFillBrush = Brushes.Green;
                     break;
-
+                
                 default:
                     throw new ArgumentOutOfRangeException();
             }
