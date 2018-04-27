@@ -20,6 +20,8 @@ namespace PicrossSolverLibrary
 
         public PicrossPuzzle Puzzle { get; }
 
+        public static PicrossBoard GetEmpty() => new PicrossBoard(PicrossPuzzle.GetEmpty());
+
         public PicrossBoard(PicrossPuzzle puzzle)
         {
             Puzzle = puzzle;

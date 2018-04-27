@@ -32,8 +32,10 @@ namespace PicrossSolverWPF
                 "Board", 
                 typeof(PicrossBoard), 
                 typeof(PicrossBoardView),
-                new PropertyMetadata(null)
-                );
+                new PropertyMetadata(
+                    PicrossBoard.GetEmpty()
+                )
+            );
 
         public List<PicrossCellView> CellsView
         {

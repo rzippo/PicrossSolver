@@ -24,5 +24,19 @@ namespace PicrossSolverLibrary
 
         [JsonProperty("row-rules")]
         public IList<IList<int>> RowRules { get; set; }
+
+        internal static PicrossPuzzle GetEmpty() => new PicrossPuzzle(){
+            Name = "Empty puzzle",
+            ColumnCount = 2,
+            RowCount = 2,
+            ColumnRules = new int[][]{
+                new int[]{0},
+                new int[]{0}
+            },
+            RowRules = new int[][]{
+                new int[]{0},
+                new int[]{0}
+            }
+        };
     }
 }
