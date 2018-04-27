@@ -9,7 +9,7 @@ namespace PicrossSolverLibrary
     {
         public List<int> BlocksRule { get; }
         public int LineLength { get; }
-
+        public bool IsEmpty => BlocksRule.SequenceEqual(new int[]{0});
         public int BlockCount => BlocksRule.Count;
         public int OuterBlockCount => (BlockCount == 1) ? 1 : 2;
         public int InnerBlockCount => BlockCount - OuterBlockCount;
@@ -52,12 +52,15 @@ namespace PicrossSolverLibrary
 
         public bool IsLegal => MinRequiredSpace <= LineLength;
 
-        public bool IsTrivial => IsLegal && MinGaps == MaxGaps;
+        public bool IsTrivial => IsEmpty || (IsLegal && MinGaps == MaxGaps);
 
         public IEnumerable<PicrossCellState> TrivialSolution()
         {
             if (!IsTrivial)
                 return null;
+
+            if(IsEmpty)
+                return (new PicrossLine(LineLength, PicrossCellState.Void)).Cells.Select(cell => cell.State);
 
             PicrossCellState[] solution = new PicrossCellState[LineLength];
             int lineIndex = 0;
