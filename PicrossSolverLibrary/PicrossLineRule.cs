@@ -54,13 +54,13 @@ namespace PicrossSolverLibrary
 
         public bool IsTrivial => IsEmpty || (IsLegal && MinGaps == MaxGaps);
 
-        public IEnumerable<PicrossCellState> TrivialSolution()
+        public PicrossLine GetTrivialSolution()
         {
             if (!IsTrivial)
                 return null;
 
             if(IsEmpty)
-                return (new PicrossLine(LineLength, PicrossCellState.Void)).Cells.Select(cell => cell.State);
+                return new PicrossLine(LineLength, PicrossCellState.Void);
 
             PicrossCellState[] solution = new PicrossCellState[LineLength];
             int lineIndex = 0;
@@ -75,7 +75,7 @@ namespace PicrossSolverLibrary
                     solution[lineIndex] = PicrossCellState.Void;
                 lineIndex++;
             }
-            return solution;
+            return new PicrossLine(solution);
         }
         
         public PicrossLineRule(IEnumerable<int> lineStructure, int lineLength)
@@ -114,7 +114,7 @@ namespace PicrossSolverLibrary
             if (IsTrivial)
                 return new List<PicrossLine>()
                 {
-                    new PicrossLine(TrivialSolution())
+                    new PicrossLine(GetTrivialSolution())
                 };
 
             var gapRules = GetGapRules();
