@@ -99,6 +99,9 @@ namespace PicrossSolverLibrary
 
         public bool CheckSolution(PicrossLine line)
         {
+            if(IsEmpty)
+                return line.Cells.All(cell => cell.State == PicrossCellState.Void);
+
             var lineBlocks = line.ComputeBlocks();
             if (BlockCount != lineBlocks.Count())
                 return false;
