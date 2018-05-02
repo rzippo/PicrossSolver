@@ -34,15 +34,9 @@
                 Solve
             </Button>
         </StackPanel>
-        <DataGrid
-            Name="BoardView"
-            Grid.Row="1"
-            Visibility="Hidden">
-        </DataGrid>
-        <TextBlock
-            Name="TextBoardView"
+        <local:PicrossBoardView
+            x:Name="BoardView"
             Grid.Row="1">
-        </TextBlock>
-        
+        </local:PicrossBoardView>
     </Grid>
 </Window>

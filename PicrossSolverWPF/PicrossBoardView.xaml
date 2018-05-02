@@ -7,6 +7,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <UserControl.Resources>
+        <local:GridWidthConverter x:Key="WidthConverter"/>
+    </UserControl.Resources>
     <Grid>
         <ItemsControl 
             ItemsSource="{Binding Path=CellsView}">
@@ -14,16 +17,17 @@
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <UniformGrid 
+                        Name="Grid"
                         Rows="{Binding Path=Board.RowCount}"
-                        Columns="{Binding Path=Board.ColumnCount}"/>
+                        Columns="{Binding Path=Board.ColumnCount}"
+                        Width="{Binding Converter={StaticResource WidthConverter}, RelativeSource={RelativeSource Self}}"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Rectangle 
-                        Height="5"
-                        Width="5"
+                        Margin="1"
                         Stroke="Black"
                         StrokeThickness="1"
                         Fill="{Binding CellFillBrush}"/>

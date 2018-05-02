@@ -24,7 +24,10 @@ namespace PicrossSolverWPF
         public PicrossBoard Board
         {
             get { return (PicrossBoard)GetValue(BoardProperty); }
-            set { SetValue(BoardProperty, value); }
+            set {
+                SetValue(BoardProperty, value);
+                ReloadCellsView();
+            }
         }
 
         public static readonly DependencyProperty BoardProperty =
@@ -51,17 +54,19 @@ namespace PicrossSolverWPF
                 new PropertyMetadata(new List<PicrossCellView>())
                 );
 
-        public PicrossPuzzle Puzzle { get; set; }
+        private PicrossPuzzle puzzle;
+        public PicrossPuzzle Puzzle {
+            get => puzzle;
+            set
+            {
+                puzzle = value;
+                Board = new PicrossBoard(puzzle);
+            }
+        }
 
         public PicrossBoardView()
         {
             InitializeComponent();
-        }
-
-        public void InitializeBoard(PicrossPuzzle puzzle)
-        {
-            Puzzle = puzzle;
-            Board = new PicrossBoard(Puzzle);
             ReloadCellsView();
         }
 
