@@ -49,6 +49,7 @@ namespace PicrossSolverWPF
 
         private void Load_OnClick(object sender, RoutedEventArgs e)
         {
+            PicrossPuzzle puzzle = null;
             try
             {
                 using (FileStream fs = new FileStream(JsonPath.Text, FileMode.Open))
@@ -56,14 +57,18 @@ namespace PicrossSolverWPF
                     using (StreamReader sr = new StreamReader(fs))
                     {
                         string json = sr.ReadToEnd();
-                        PicrossPuzzle puzzle = JsonConvert.DeserializeObject<PicrossPuzzle>(json);
-                        BoardView.Puzzle = puzzle;
+                        puzzle = JsonConvert.DeserializeObject<PicrossPuzzle>(json);
                     }
                 }
             }
             catch (Exception)
             {
                 MessageBox.Show("Error while opening json");
+            }
+
+            if(puzzle != null)
+            {
+                BoardView.Puzzle = puzzle;
             }
         }
 
