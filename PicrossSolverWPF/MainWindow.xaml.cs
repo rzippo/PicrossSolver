@@ -24,9 +24,6 @@ namespace PicrossSolverWPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        public PicrossBoard Board { get; set; }
-        public PicrossPuzzle Puzzle { get; private set; }
-
         public PicrossCellView[][] ViewMatrix { get; set; }
 
         public MainWindow()
@@ -59,7 +56,8 @@ namespace PicrossSolverWPF
                     using (StreamReader sr = new StreamReader(fs))
                     {
                         string json = sr.ReadToEnd();
-                        Puzzle = JsonConvert.DeserializeObject<PicrossPuzzle>(json);
+                        PicrossPuzzle puzzle = JsonConvert.DeserializeObject<PicrossPuzzle>(json);
+                        BoardView.Puzzle = puzzle;
                     }
                 }
             }
@@ -67,39 +65,12 @@ namespace PicrossSolverWPF
             {
                 MessageBox.Show("Error while opening json");
             }
-
-            Board = new PicrossBoard(Puzzle);
-            LoadPicrossGrid();
-        }
-
-        private void LoadPicrossGrid()
-        {
-            BuildMatrix();
-
-            //todo: add visual representation
-            // https://stackoverflow.com/questions/25004713/creating-a-grid-filled-with-rectangles
-
-            MessageBox.Show("Ok");
-        }
-
-        private void BuildMatrix()
-        {
-            ViewMatrix = new PicrossCellView[Board.RowCount][];
-            for (int rowIndex = 0; rowIndex < Board.ColumnCount; rowIndex++)
-            {
-                var row = new PicrossCellView[Board.ColumnCount];
-                for (int columnIndex = 0; columnIndex < Board.RowCount; columnIndex++)
-                {
-                    row[columnIndex] = new PicrossCellView(Board.Matrix[rowIndex, columnIndex]);
-                }
-                ViewMatrix[rowIndex] = row;
-            }
         }
 
         private void Solve_Click(object sender, RoutedEventArgs e)
         {
-            Board.Solve();
-            MessageBox.Show("Ok");
+            BoardView.Board.Solve();
+            MessageBox.Show("Solve completed");
         }
     }
 }

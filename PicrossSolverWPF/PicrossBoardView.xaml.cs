@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,18 +41,18 @@ namespace PicrossSolverWPF
                 )
             );
 
-        public List<PicrossCellView> CellsView
+        public ObservableCollection<PicrossCellView> CellsView
         {
-            get { return (List<PicrossCellView>)GetValue(CellsViewProperty); }
+            get { return (ObservableCollection<PicrossCellView>)GetValue(CellsViewProperty); }
             set { SetValue(CellsViewProperty, value); }
         }
 
         public static readonly DependencyProperty CellsViewProperty =
             DependencyProperty.Register(
                 "CellsView",
-                typeof(List<PicrossCellView>),
+                typeof(ObservableCollection<PicrossCellView>),
                 typeof(PicrossBoardView),
-                new PropertyMetadata(new List<PicrossCellView>())
+                new PropertyMetadata(new ObservableCollection<PicrossCellView>())
                 );
 
         private PicrossPuzzle puzzle;

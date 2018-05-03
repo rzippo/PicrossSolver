@@ -20,7 +20,8 @@
                         Name="Grid"
                         Rows="{Binding Path=Board.RowCount}"
                         Columns="{Binding Path=Board.ColumnCount}"
-                        Width="{Binding Converter={StaticResource WidthConverter}, RelativeSource={RelativeSource Self}}"/>
+                        Width="{Binding Converter={StaticResource WidthConverter}, RelativeSource={RelativeSource Self}}"
+                        Background="LightGray"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             
