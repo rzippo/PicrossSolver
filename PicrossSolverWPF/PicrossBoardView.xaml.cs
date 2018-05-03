@@ -74,9 +74,9 @@ namespace PicrossSolverWPF
         private void ReloadCellsView()
         {
             CellsView.Clear();
-            for (int rowIndex = 0; rowIndex < Board.ColumnCount; rowIndex++)
+            for (int rowIndex = 0; rowIndex < Board.RowCount; rowIndex++)
             {
-                for (int columnIndex = 0; columnIndex < Board.RowCount; columnIndex++)
+                for (int columnIndex = 0; columnIndex < Board.ColumnCount; columnIndex++)
                 {
                     CellsView.Add(new PicrossCellView(Board.Matrix[rowIndex, columnIndex]));
                 }
