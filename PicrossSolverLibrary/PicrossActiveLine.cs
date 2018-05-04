@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -53,8 +53,7 @@ namespace PicrossSolverLibrary
             CandidateSolutions = survivingCandidates;
         }
 
-        //todo: find better name
-        public PicrossLine GetSureCells()
+        public PicrossLine GetDeterminableCells()
         {
             if (!IsValid)
                 return new PicrossLine(Length, PicrossCellState.Undetermined);

@@ -43,7 +43,7 @@ namespace PicrossSolverLibrary
                 log.Info("Start solving - " + BoardName(context));
 
             if (context == null)
-                SureCellsPass();
+                SetDetermibableCells();
             
             CandidateExclusionSolve(verboseLevel);
 
@@ -95,12 +95,11 @@ namespace PicrossSolverLibrary
             }
         }
 
-        //todo: find better name
-        private void SureCellsPass()
+        private void SetDetermibableCells()
         {
             foreach(var line in ActiveLines)
             {
-                line.ApplyLine(line.GetSureCells());
+                line.ApplyLine(line.GetDeterminableCells());
             }
         }
 

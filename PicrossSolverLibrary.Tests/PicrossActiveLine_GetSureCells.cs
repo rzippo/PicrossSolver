@@ -19,7 +19,7 @@ namespace PicrossSolverLibrary.Tests
                 type: LineType.Row,
                 index: 0);
 
-            var sureCells = activeLine.GetSureCells();
+            var sureCells = activeLine.GetDeterminableCells();
             var expectedSolution = new PicrossLine(
                 new List<PicrossCell>
                 {
@@ -50,7 +50,7 @@ namespace PicrossSolverLibrary.Tests
                 type: LineType.Row,
                 index: 0);
 
-            var sureCells = activeLine.GetSureCells();
+            var sureCells = activeLine.GetDeterminableCells();
             var expectedSolution = new PicrossLine(
                 new List<PicrossCell>
                 {
