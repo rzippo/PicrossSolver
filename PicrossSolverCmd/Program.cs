@@ -67,7 +67,8 @@ namespace PicrossSolver
             Console.WriteLine("Solving complete, result:");
             Console.Write(Board.Print());
 
-            PressEnterToContinue();        
+            if(!opts.NoWait)
+                PressEnterToContinue();        
         }
 
         private static void PressEnterToContinue()

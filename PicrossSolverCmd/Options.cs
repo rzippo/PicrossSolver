@@ -12,7 +12,10 @@ namespace PicrossSolverCmd
         public string JsonPath { get; set; }
 
         [Option('v', "verbose", Default = VerboseLevel.Silent, HelpText = "Prints the board at each fast-forward step")]
-        public PicrossSolverLibrary.VerboseLevel Verbose { get; set; }
+        public VerboseLevel Verbose { get; set; }
+
+        [Option("noWait", Default = false, HelpText = "Exits application after solving without waiting for user input")]
+        public bool NoWait { get; set; }
 
         //anything else?
     }
