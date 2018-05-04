@@ -38,14 +38,14 @@ namespace PicrossSolverLibrary
             Cells = cells;
         }
 
-        public PicrossLine(PicrossLine other)
+        public PicrossLine(PicrossLine copySource)
         {
-            var cells = new PicrossCell[other.Length];
+            var cells = new PicrossCell[copySource.Length];
             for (int i = 0; i < cells.Length; i++)
             {
                 cells[i] = new PicrossCell()
                 {
-                    State = other.Cells.ElementAt(i).State
+                    State = copySource.Cells.ElementAt(i).State
                 };
             }
             Cells = cells;

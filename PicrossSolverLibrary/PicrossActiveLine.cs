@@ -20,13 +20,13 @@ namespace PicrossSolverLibrary
         public int Index { get; }
 
         public PicrossLineRule Rule { get; }
-        public IEnumerable<PicrossLine> CandidateSolutions { get; private set; }
+        public List<PicrossLine> CandidateSolutions { get; private set; }
         public int CandidateCount => CandidateSolutions.Count();
 
         public bool IsValid => CandidateSolutions.Any();
         public bool IsSet => Cells.All(cell => cell.State != PicrossCellState.Undetermined);
         public bool IsSolved => Rule.CheckSolution(this);
-        
+
         public PicrossActiveLine(IEnumerable<PicrossCell> cells, PicrossLineRule rule, LineType type, int index)
            : base(cells)
         {
@@ -34,10 +34,27 @@ namespace PicrossSolverLibrary
             Index = index;
 
             Rule = rule;
-            CandidateSolutions = Rule.GenerateCandidates();
+            CandidateSolutions = Rule.GenerateCandidates().ToList();
             ReviewCandidates();
-            
-            foreach(PicrossCell cell in Cells)
+
+            RegisterCellHandlers();
+        }
+
+        public PicrossActiveLine(IEnumerable<PicrossCell> cells, PicrossActiveLine copySource)
+            : base(cells)
+        {
+            Type = copySource.Type;
+            Index = copySource.Index;
+            Rule = copySource.Rule;
+            CandidateSolutions = copySource.CandidateSolutions
+                .Select( candidate => new PicrossLine(candidate)).ToList();
+
+            RegisterCellHandlers();
+        }
+
+        private void RegisterCellHandlers()
+        {
+            foreach (PicrossCell cell in Cells)
             {
                 cell.PropertyChanged += CellPropertyChangedHandler;
             }
@@ -51,7 +68,7 @@ namespace PicrossSolverLibrary
         private void ReviewCandidates()
         {
             var survivingCandidates = CandidateSolutions.Where(candidate => candidate.IsCandidate(Cells));
-            CandidateSolutions = survivingCandidates;
+            CandidateSolutions = survivingCandidates.ToList();
         }
 
         public PicrossLine GetDeterminableCells()

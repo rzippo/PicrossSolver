@@ -47,9 +47,9 @@ namespace PicrossSolverLibrary
             ActiveLines = (new[] {Columns, Rows}).SelectMany(collection => collection);
         }
 
-        public PicrossBoard(PicrossBoard other)
+        public PicrossBoard(PicrossBoard copySource)
         {
-            Puzzle = other.Puzzle;
+            Puzzle = copySource.Puzzle;
             RowCount = Puzzle.RowCount;
             ColumnCount = Puzzle.ColumnCount;
 
@@ -58,7 +58,7 @@ namespace PicrossSolverLibrary
             {
                 for (int columnIndex = 0; columnIndex < ColumnCount; columnIndex++)
                 {
-                    PicrossCell otherCell = other.Matrix[rowIndex, columnIndex];
+                    PicrossCell otherCell = copySource.Matrix[rowIndex, columnIndex];
                     Matrix[rowIndex, columnIndex] = new PicrossCell()
                     {
                         State = otherCell.State,
@@ -68,8 +68,8 @@ namespace PicrossSolverLibrary
                 }
             }
 
-            Columns = GatherColumns();
-            Rows = GatherRows();
+            Columns = CopyColumns(copySource);
+            Rows = CopyRows(copySource);
             ActiveLines = (new[] { Columns, Rows }).SelectMany(collection => collection);
         }
 
@@ -133,6 +133,42 @@ namespace PicrossSolverLibrary
                     index: rowIndex,
                     cells: rowCells,
                     rule: rowRule);
+            }
+
+            return rows;
+        }
+
+        private PicrossActiveLine[] CopyColumns(PicrossBoard copySource)
+        {
+            var columns = new PicrossActiveLine[ColumnCount];
+
+            for (int columnIndex = 0; columnIndex < ColumnCount; columnIndex++)
+            {
+                var columnCells = new List<PicrossCell>();
+                for (int rowIndex = 0; rowIndex < RowCount; rowIndex++)
+                    columnCells.Add(Matrix[rowIndex, columnIndex]);
+
+                columns[columnIndex] = new PicrossActiveLine(
+                    cells: columnCells,
+                    copySource: copySource.Columns.ElementAt(columnIndex));
+            }
+
+            return columns;
+        }
+
+        private PicrossActiveLine[] CopyRows(PicrossBoard copySource)
+        {
+            var rows = new PicrossActiveLine[RowCount];
+
+            for (int rowIndex = 0; rowIndex < RowCount; rowIndex++)
+            {
+                var rowCells = new List<PicrossCell>();
+                for (int columnIndex = 0; columnIndex < ColumnCount; columnIndex++)
+                    rowCells.Add(Matrix[rowIndex, columnIndex]);
+
+                rows[rowIndex] = new PicrossActiveLine(
+                    cells: rowCells,
+                    copySource: copySource.Rows.ElementAt(rowIndex));
             }
 
             return rows;
