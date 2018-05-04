@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace PicrossSolverLibrary
 {
@@ -76,6 +77,19 @@ namespace PicrossSolverLibrary
                 var newState = line.Cells.ElementAt(cellIndex).State;
                 if (newState != PicrossCellState.Undetermined)
                     Cells.ElementAt(cellIndex).State = newState;
+            }
+        }
+
+        public async Task ApplyLineAsync(PicrossLine line)
+        {
+            if (line.Length != Length)
+                throw new ArgumentException();
+
+            for (int cellIndex = 0; cellIndex < Length; cellIndex++)
+            {
+                var newState = line.Cells.ElementAt(cellIndex).State;
+                if (newState != PicrossCellState.Undetermined)
+                    await new Task(() => Cells.ElementAt(cellIndex).State = newState);
             }
         }
     }
