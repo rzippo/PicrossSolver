@@ -73,16 +73,16 @@ namespace PicrossSolverLibrary
             ActiveLines = (new[] { Columns, Rows }).SelectMany(collection => collection);
         }
 
-        public void Copy(PicrossBoard other)
+        public void Copy(PicrossBoard source)
         {
-            if (Puzzle != other.Puzzle)
+            if (Puzzle != source.Puzzle)
                 throw new ArgumentException();
 
             for (int rowIndex = 0; rowIndex < RowCount; rowIndex++)
             {
                 for (int columnIndex = 0; columnIndex < ColumnCount; columnIndex++)
                 {
-                    PicrossCell otherCell = other.Matrix[rowIndex, columnIndex];
+                    PicrossCell otherCell = source.Matrix[rowIndex, columnIndex];
                     Matrix[rowIndex, columnIndex].State = otherCell.State;
                 }
             }
