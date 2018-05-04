@@ -72,10 +72,17 @@ namespace PicrossSolverWPF
             }
         }
 
-        private void Solve_Click(object sender, RoutedEventArgs e)
+        private async void Solve_Click(object sender, RoutedEventArgs e)
         {
-            BoardView.Board.Solve();
-            MessageBox.Show("Solve completed");
+            try
+            {
+                await BoardView.Board.SolveAsync();
+                MessageBox.Show("Solve completed");
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }            
         }
     }
 }
