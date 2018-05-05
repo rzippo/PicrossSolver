@@ -30,10 +30,15 @@ namespace PicrossSolverWPF
         public PicrossCellView(PicrossCell observedCell)
         {
             Cell = observedCell;
-            Cell.PropertyChanged += UpdateRectangle;
+            Cell.PropertyChanged += CellChangedHandler;
         }
 
-        private void UpdateRectangle(object sender, PropertyChangedEventArgs e)
+        private void CellChangedHandler(object sender, PropertyChangedEventArgs e)
+        {
+            Dispatcher.BeginInvoke((Action)(() => UpdateRectangle()));
+        }
+
+        private void UpdateRectangle()
         {
             switch (Cell.State)
             {
