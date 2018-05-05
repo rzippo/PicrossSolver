@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace PicrossSolverLibrary
 {
@@ -97,10 +98,10 @@ namespace PicrossSolverLibrary
 
         private void SetDetermibableCells()
         {
-            foreach(var line in ActiveLines)
-            {
-                line.ApplyLine(line.GetDeterminableCells());
-            }
+            Parallel.ForEach(
+                ActiveLines,
+                line => line.ApplyLine(line.GetDeterminableCells())
+            );
         }
 
         public void CandidateExclusionSolve(VerboseLevel verboseLevel)
