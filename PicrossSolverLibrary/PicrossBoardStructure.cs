@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace PicrossSolverLibrary
@@ -142,17 +143,19 @@ namespace PicrossSolverLibrary
         {
             var columns = new PicrossActiveLine[ColumnCount];
 
-            for (int columnIndex = 0; columnIndex < ColumnCount; columnIndex++)
-            {
-                var columnCells = new List<PicrossCell>();
-                for (int rowIndex = 0; rowIndex < RowCount; rowIndex++)
-                    columnCells.Add(Matrix[rowIndex, columnIndex]);
+            Parallel.ForEach(
+                Enumerable.Range(0, ColumnCount),
+                columnIndex =>
+                {
+                    var columnCells = new List<PicrossCell>();
+                    for (int rowIndex = 0; rowIndex < RowCount; rowIndex++)
+                        columnCells.Add(Matrix[rowIndex, columnIndex]);
 
-                columns[columnIndex] = new PicrossActiveLine(
-                    cells: columnCells,
-                    copySource: copySource.Columns.ElementAt(columnIndex));
-            }
-
+                    columns[columnIndex] = new PicrossActiveLine(
+                        cells: columnCells,
+                        copySource: copySource.Columns.ElementAt(columnIndex));
+                });
+            
             return columns;
         }
 
@@ -160,16 +163,18 @@ namespace PicrossSolverLibrary
         {
             var rows = new PicrossActiveLine[RowCount];
 
-            for (int rowIndex = 0; rowIndex < RowCount; rowIndex++)
-            {
-                var rowCells = new List<PicrossCell>();
-                for (int columnIndex = 0; columnIndex < ColumnCount; columnIndex++)
-                    rowCells.Add(Matrix[rowIndex, columnIndex]);
+            Parallel.ForEach(
+                Enumerable.Range(0, RowCount),
+                rowIndex =>
+                {
+                    var rowCells = new List<PicrossCell>();
+                    for (int columnIndex = 0; columnIndex < ColumnCount; columnIndex++)
+                        rowCells.Add(Matrix[rowIndex, columnIndex]);
 
-                rows[rowIndex] = new PicrossActiveLine(
-                    cells: rowCells,
-                    copySource: copySource.Rows.ElementAt(rowIndex));
-            }
+                    rows[rowIndex] = new PicrossActiveLine(
+                        cells: rowCells,
+                        copySource: copySource.Rows.ElementAt(rowIndex));
+                });
 
             return rows;
         }
