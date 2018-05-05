@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -77,15 +77,7 @@ namespace PicrossSolverLibrary
                 && IsValid)
             {
                 var selectedLine = solvableLines.First();
-                await selectedLine.ApplyLineAsync(selectedLine.CandidateSolutions.First());
-            }
-        }
-
-        private async Task SetDeterminableCellsAsync()
-        {
-            foreach (var line in ActiveLines)
-            {
-                await line.ApplyLineAsync(line.GetDeterminableCells());
+                await new Task(() => selectedLine.ApplyLine(selectedLine.CandidateSolutions.First()));
             }
         }
     }

@@ -9,6 +9,8 @@ namespace PicrossSolverLibrary
 {
     public class PicrossActiveLine : PicrossLine, INotifyPropertyChanged
     {
+        private bool skipReview = false;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
@@ -47,7 +49,9 @@ namespace PicrossSolverLibrary
             Index = copySource.Index;
             Rule = copySource.Rule;
             CandidateSolutions = copySource.CandidateSolutions
-                .Select( candidate => new PicrossLine(candidate)).ToList();
+                .AsParallel()
+                .Select( candidate => new PicrossLine(candidate))
+                .ToList();
 
             RegisterCellHandlers();
         }
@@ -62,12 +66,15 @@ namespace PicrossSolverLibrary
 
         private void CellPropertyChangedHandler(object sender, PropertyChangedEventArgs e)
         {
-            ReviewCandidates();
+            if (!skipReview)
+            {
+                ReviewCandidates();
+            }
         }
 
         private void ReviewCandidates()
         {
-            var survivingCandidates = CandidateSolutions.Where(candidate => candidate.IsCandidate(Cells));
+            var survivingCandidates = CandidateSolutions.AsParallel().Where(candidate => candidate.IsCandidate(Cells));
             CandidateSolutions = survivingCandidates.ToList();
         }
 
@@ -89,25 +96,17 @@ namespace PicrossSolverLibrary
             if(line.Length != Length)
                 throw new ArgumentException();
 
-            for (int cellIndex = 0; cellIndex < Length; cellIndex++)
-            {
-                var newState = line.Cells.ElementAt(cellIndex).State;
-                if (newState != PicrossCellState.Undetermined)
-                    Cells.ElementAt(cellIndex).State = newState;
-            }
-        }
-
-        public async Task ApplyLineAsync(PicrossLine line)
-        {
-            if (line.Length != Length)
-                throw new ArgumentException();
-
-            for (int cellIndex = 0; cellIndex < Length; cellIndex++)
-            {
-                var newState = line.Cells.ElementAt(cellIndex).State;
-                if (newState != PicrossCellState.Undetermined)
-                    await new Task(() => Cells.ElementAt(cellIndex).State = newState);
-            }
+            skipReview = true;
+            Parallel.ForEach(
+                Enumerable.Range(0, Length),
+                cellIndex =>
+                {
+                    var newState = line.Cells.ElementAt(cellIndex).State;
+                    if (newState != PicrossCellState.Undetermined)
+                        Cells.ElementAt(cellIndex).State = newState;
+                });
+            skipReview = false;
+            ReviewCandidates();
         }
     }
 
