@@ -22,33 +22,33 @@ namespace PicrossSolverLibrary
 
         public PicrossLine(IEnumerable<PicrossCell> cells)
         {
-            Cells = cells;
+            Cells = cells.ToArray();
         }
 
         public PicrossLine(IEnumerable<PicrossCellState> cellStates)
         {
-            var cells = new List<PicrossCell>();
+            Cells = new PicrossCell[cellStates.Count()];
+            int i = 0;
             foreach (var cellState in cellStates)
             {
-                cells.Add(new PicrossCell()
+                Cells[i] = new PicrossCell()
                 {
                     State = cellState
-                });
-            }
-            Cells = cells;
+                };
+                i++;
+            }            
         }
 
         public PicrossLine(PicrossLine copySource)
         {
-            var cells = new PicrossCell[copySource.Length];
-            for (int i = 0; i < cells.Length; i++)
+            Cells = new PicrossCell[copySource.Length];
+            for (int i = 0; i < Length; i++)
             {
-                cells[i] = new PicrossCell()
+                Cells[i] = new PicrossCell()
                 {
-                    State = copySource.Cells.ElementAt(i).State
+                    State = copySource.Cells[i].State
                 };
             }
-            Cells = cells;
         }
 
         public PicrossLine(IEnumerable<int> blocksRule, IEnumerable<int> gap)
@@ -66,7 +66,7 @@ namespace PicrossSolverLibrary
 
             cells.AddRange(FillGap(gap.Last()));
 
-            Cells = cells;
+            Cells = cells.ToArray();
         }
     }
 }

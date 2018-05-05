@@ -7,8 +7,8 @@ namespace PicrossSolverLibrary
 {
     public partial class PicrossLine
     {
-        public IEnumerable<PicrossCell> Cells { get; }
-        public int Length => Cells.Count();
+        public PicrossCell[] Cells { get; }
+        public int Length => Cells.Length;
 
         private static IEnumerable<PicrossCell> FillGap(int gapSize)
         {
@@ -45,7 +45,7 @@ namespace PicrossSolverLibrary
             int nextBlock = 0;
             bool blockActive = false;
 
-            for (int lineIndex = 0; lineIndex < Cells.Count(); lineIndex++)
+            for (int lineIndex = 0; lineIndex < Cells.Length; lineIndex++)
             {
                 if (Cells.ElementAt(lineIndex) == PicrossCellState.Filled)
                 {

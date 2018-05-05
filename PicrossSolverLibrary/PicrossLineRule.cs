@@ -7,10 +7,10 @@ namespace PicrossSolverLibrary
 {
     public class PicrossLineRule
     {
-        public List<int> BlocksRule { get; }
+        public int[] BlocksRule { get; }
         public int LineLength { get; }
         public bool IsEmpty => BlocksRule.SequenceEqual(new int[]{0});
-        public int BlockCount => BlocksRule.Count;
+        public int BlockCount => BlocksRule.Length;
         public int OuterBlockCount => (BlockCount == 1) ? 1 : 2;
         public int InnerBlockCount => BlockCount - OuterBlockCount;
 
@@ -80,10 +80,9 @@ namespace PicrossSolverLibrary
         
         public PicrossLineRule(IEnumerable<int> lineStructure, int lineLength)
         {
-            BlocksRule = new List<int>(lineStructure);
+            BlocksRule = lineStructure.ToArray();
             LineLength = lineLength;
         }
-
         
         public bool Validate(PicrossLine line)
         {
