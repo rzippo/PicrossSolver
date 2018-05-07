@@ -12,22 +12,22 @@ using PicrossSolverLibrary;
 
 namespace PicrossSolverWPF
 {
-    public class PicrossCellView : DependencyObject 
+    public class PicrossCellViewModel : DependencyObject 
     {
 
 
-        public Brush CellFillBrush
+        public Brush FillBrush
         {
-            get { return (Brush)GetValue(CellFillBrushProperty); }
-            set { SetValue(CellFillBrushProperty, value); }
+            get { return (Brush)GetValue(FillBrushProperty); }
+            set { SetValue(FillBrushProperty, value); }
         }
 
-        public static readonly DependencyProperty CellFillBrushProperty =
-            DependencyProperty.Register("CellFillBrush", typeof(Brush), typeof(PicrossCellView), new PropertyMetadata(Brushes.Transparent));
+        public static readonly DependencyProperty FillBrushProperty =
+            DependencyProperty.Register("FillBrush", typeof(Brush), typeof(PicrossCellViewModel), new PropertyMetadata(Brushes.Transparent));
         
         public PicrossCell Cell { get; set; }
 
-        public PicrossCellView(PicrossCell observedCell)
+        public PicrossCellViewModel(PicrossCell observedCell)
         {
             Cell = observedCell;
             Cell.PropertyChanged += CellChangedHandler;
@@ -43,13 +43,13 @@ namespace PicrossSolverWPF
             switch (Cell.State)
             {
                 case PicrossCellState.Undetermined:
-                    CellFillBrush = Brushes.Transparent;
+                    FillBrush = Brushes.Transparent;
                     break;
                 case PicrossCellState.Void:
-                    CellFillBrush = Brushes.White;
+                    FillBrush = Brushes.White;
                     break;
                 case PicrossCellState.Filled:
-                    CellFillBrush = Brushes.Green;
+                    FillBrush = Brushes.Green;
                     break;
                 
                 default:

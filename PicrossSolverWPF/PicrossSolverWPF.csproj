@@ -82,7 +82,7 @@
     <Compile Include="PicrossBoardView.xaml.cs">
       <DependentUpon>PicrossBoardView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PicrossCellView.cs" />
+    <Compile Include="PicrossCellViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

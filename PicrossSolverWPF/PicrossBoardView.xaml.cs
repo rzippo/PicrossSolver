@@ -41,18 +41,18 @@ namespace PicrossSolverWPF
                 )
             );
 
-        public ObservableCollection<PicrossCellView> CellsView
+        public ObservableCollection<PicrossCellViewModel> CellsView
         {
-            get { return (ObservableCollection<PicrossCellView>)GetValue(CellsViewProperty); }
+            get { return (ObservableCollection<PicrossCellViewModel>)GetValue(CellsViewProperty); }
             set { SetValue(CellsViewProperty, value); }
         }
 
         public static readonly DependencyProperty CellsViewProperty =
             DependencyProperty.Register(
                 "CellsView",
-                typeof(ObservableCollection<PicrossCellView>),
+                typeof(ObservableCollection<PicrossCellViewModel>),
                 typeof(PicrossBoardView),
-                new PropertyMetadata(new ObservableCollection<PicrossCellView>())
+                new PropertyMetadata(new ObservableCollection<PicrossCellViewModel>())
                 );
 
         private PicrossPuzzle puzzle;
@@ -78,7 +78,7 @@ namespace PicrossSolverWPF
             {
                 for (int columnIndex = 0; columnIndex < Board.ColumnCount; columnIndex++)
                 {
-                    CellsView.Add(new PicrossCellView(Board.Matrix[rowIndex, columnIndex]));
+                    CellsView.Add(new PicrossCellViewModel(Board.Matrix[rowIndex, columnIndex]));
                 }
             }
         }

@@ -24,7 +24,7 @@ namespace PicrossSolverWPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        public PicrossCellView[][] ViewMatrix { get; set; }
+        public PicrossCellViewModel[][] ViewMatrix { get; set; }
 
         public MainWindow()
         {
