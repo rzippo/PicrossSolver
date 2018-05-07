@@ -9,10 +9,12 @@ namespace PicrossSolverLibrary.Tests
 {
     public class PicrossBoard_Solve
     {
-        [Fact]
-        public void LoadFromJson_Solve()
+        [Theory]
+        [InlineData("p050.json")]
+        [InlineData("p080.json")]
+        public void LoadFromJson_Solve(string puzzlePath)
         {
-            using (FileStream fs = new FileStream("p050.json", FileMode.Open))
+            using (FileStream fs = new FileStream(puzzlePath, FileMode.Open))
             {
                 using (StreamReader sr = new StreamReader(fs))
                 {
