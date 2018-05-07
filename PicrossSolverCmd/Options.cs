@@ -17,6 +17,7 @@ namespace PicrossSolverCmd
         [Option("noWait", Default = false, HelpText = "Exits application after solving without waiting for user input")]
         public bool NoWait { get; set; }
 
-        //anything else?
+        [Option("log", Default = false, HelpText = "Logs application events with log4Net")]
+        public bool DoLog { get; set; }
     }
 }

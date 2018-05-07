@@ -21,8 +21,6 @@ namespace PicrossSolver
 
         static void Main(string[] args)
         {
-            ConfigureLog4Net();
-           
             CommandLine.Parser.Default.ParseArguments<Options>(args)
                 .WithParsed<Options>(opts => RunOptionsAndReturnExitCode(opts))
                 .WithNotParsed<Options>((errs) => HandleParseError(errs));
@@ -44,6 +42,9 @@ namespace PicrossSolver
 
         private static void RunOptionsAndReturnExitCode(Options opts)
         {
+            if(opts.DoLog)
+                ConfigureLog4Net();
+
             try
             {
                 using (FileStream fs = new FileStream(opts.JsonPath, FileMode.Open))
