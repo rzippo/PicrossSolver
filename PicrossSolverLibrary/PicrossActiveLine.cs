@@ -48,10 +48,7 @@ namespace PicrossSolverLibrary
             Type = copySource.Type;
             Index = copySource.Index;
             Rule = copySource.Rule;
-            CandidateSolutions = copySource.CandidateSolutions
-                .AsParallel()
-                .Select( candidate => new PicrossLine(candidate))
-                .ToList();
+            CandidateSolutions = new List<PicrossLine>(copySource.CandidateSolutions);
 
             RegisterCellHandlers();
         }
