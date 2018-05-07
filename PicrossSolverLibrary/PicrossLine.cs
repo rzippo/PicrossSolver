@@ -90,9 +90,9 @@ namespace PicrossSolverLibrary
 
             for (int i = 0; i < Length; i++)
             {
-                var cell = Cells.ElementAt(i);
-                var otherCell = otherLine.Cells.ElementAt(i);
-                cell.State = cell.State.And(otherCell.State);
+                var localState = Cells[i].State;
+                var otherState = otherLine.Cells[i].State;
+                Cells[i].State = localState.And(otherState);
             }
         }
 
