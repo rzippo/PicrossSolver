@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -104,13 +104,13 @@ namespace PicrossSolverLibrary
                 switch(cell.State)
                 {
                     case PicrossCellState.Undetermined:
-                        sb.Append(" ? ");
+                        sb.Append(" ?");
                         break;
                     case PicrossCellState.Void:
-                        sb.Append("   ");
+                        sb.Append("  ");
                         break;
                     case PicrossCellState.Filled:
-                        sb.Append(" ■ ");
+                        sb.Append(" ■");
                         break;
                 }
             }
