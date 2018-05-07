@@ -6,10 +6,10 @@ using Xunit;
 
 namespace PicrossSolverLibrary.Tests
 {
-    public class PicrossActiveLine_GetSureCells
+    public class PicrossActiveLine_GetDeterminableCells
     {
         [Fact]
-        public void SureCellsOf_5_3_l10()
+        public void DeterminableCellsOf_5_3_l10()
         {
             int length = 10;
             var lineRule = new PicrossLineRule(lineStructure: new []{5, 3}, lineLength: length);
@@ -19,7 +19,7 @@ namespace PicrossSolverLibrary.Tests
                 type: LineType.Row,
                 index: 0);
 
-            var sureCells = activeLine.GetDeterminableCells();
+            var determinableCells = activeLine.GetDeterminableCells();
             var expectedSolution = new PicrossLine(
                 new List<PicrossCell>
                 {
@@ -36,11 +36,11 @@ namespace PicrossSolverLibrary.Tests
                 }
             );
 
-            Assert.True(expectedSolution.Print() == sureCells.Print());
+            Assert.True(expectedSolution.Print() == determinableCells.Print());
         }
 
         [Fact]
-        public void SureCellsOf_2_2_5()
+        public void DeterminableCellsOf_2_2_5()
         {
             int length = 5;
             var lineRule = new PicrossLineRule(lineStructure: new[] { 2, 2 }, lineLength: length);
@@ -50,7 +50,7 @@ namespace PicrossSolverLibrary.Tests
                 type: LineType.Row,
                 index: 0);
 
-            var sureCells = activeLine.GetDeterminableCells();
+            var determinableCells = activeLine.GetDeterminableCells();
             var expectedSolution = new PicrossLine(
                 new List<PicrossCell>
                 {
@@ -62,7 +62,7 @@ namespace PicrossSolverLibrary.Tests
                 }
             );
 
-            Assert.True(expectedSolution.Print() == sureCells.Print());
+            Assert.True(expectedSolution.Print() == determinableCells.Print());
         }
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -83,12 +83,12 @@ namespace PicrossSolverLibrary
             if (!IsValid)
                 return new PicrossLine(Length, PicrossCellState.Undetermined);
 
-            PicrossLine sureCells = new PicrossLine(CandidateSolutions.First());
+            PicrossLine determinableCells = new PicrossLine(CandidateSolutions.First());
             foreach (var candidateSolution in CandidateSolutions.Skip(1))
             {
-                sureCells.And(candidateSolution);
+                determinableCells.And(candidateSolution);
             }
-            return sureCells;
+            return determinableCells;
         }
 
         public void ApplyLine(PicrossLine line)
