@@ -9,7 +9,7 @@ namespace PicrossSolverLibrary.Tests
     public class PicrossLineRule_GenerateCandidates
     {
         [Fact]
-        public void GenerateCandidatesOf_2_2_5()
+        public void GenerateCandidatesOf_2_2_l5()
         {
             int length = 5;
             var lineRule = new PicrossLineRule(lineStructure: new[] { 2, 2 }, lineLength: length);
@@ -35,6 +35,5 @@ namespace PicrossSolverLibrary.Tests
                     line => line.Print() == candidateLine.Print());
             }
         }
-
     }
 }
