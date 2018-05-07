@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -74,8 +74,11 @@ namespace PicrossSolverLibrary
 
         private void ReviewCandidates()
         {
-            var survivingCandidates = CandidateSolutions.AsParallel().Where(candidate => candidate.IsCandidate(Cells));
-            CandidateSolutions = survivingCandidates.ToList();
+            CandidateSolutions = 
+                CandidateSolutions
+                .AsParallel()
+                .Where(candidate => candidate.IsCandidateSolutionFor(this))
+                .ToList();             
         }
 
         public PicrossLine GetDeterminableCells()
@@ -101,9 +104,9 @@ namespace PicrossSolverLibrary
                 Enumerable.Range(0, Length),
                 cellIndex =>
                 {
-                    var newState = line.Cells.ElementAt(cellIndex).State;
+                    var newState = line.Cells[cellIndex].State;
                     if (newState != PicrossCellState.Undetermined)
-                        Cells.ElementAt(cellIndex).State = newState;
+                        Cells[cellIndex].State = newState;
                 });
             skipReview = false;
             ReviewCandidates();

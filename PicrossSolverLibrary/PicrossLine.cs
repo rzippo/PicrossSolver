@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -72,15 +72,15 @@ namespace PicrossSolverLibrary
         
         //This function should check if this line is a valid speculative candidate for the line we pass as a parameter
         //This does not count validity - we suppose that the speculative line was generated from the rule
-        public bool IsCandidate(IEnumerable<PicrossCell> activeLine)
+        public bool IsCandidateSolutionFor(PicrossLine activeLine)
         {
-            if (activeLine.Count() != Cells.Count())
+            if (activeLine.Length != Cells.Count())
                 throw new ArgumentException();
 
-            var activeLineDeterminedIndexes = Enumerable.Range(0, activeLine.Count() - 1)
-                .Where(lineIndex => activeLine.ElementAt(lineIndex) != PicrossCellState.Undetermined);
-
-            return activeLineDeterminedIndexes.All(lineIndex => Cells.ElementAt(lineIndex).State == activeLine.ElementAt(lineIndex).State);
+            return 
+                Enumerable.Range(0, activeLine.Length - 1)
+                .Where(lineIndex => activeLine.Cells[lineIndex] != PicrossCellState.Undetermined)
+                .All(lineIndex => Cells[lineIndex].State == activeLine.Cells[lineIndex].State);
         }
 
         public void And(PicrossLine otherLine)
