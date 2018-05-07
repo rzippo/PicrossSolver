@@ -14,8 +14,6 @@ namespace PicrossSolverWPF
 {
     public class PicrossCellViewModel : DependencyObject 
     {
-
-
         public Brush FillBrush
         {
             get { return (Brush)GetValue(FillBrushProperty); }
@@ -35,10 +33,10 @@ namespace PicrossSolverWPF
 
         private void CellChangedHandler(object sender, PropertyChangedEventArgs e)
         {
-            Dispatcher.BeginInvoke((Action)(() => UpdateRectangle()));
+            Dispatcher.BeginInvoke((Action)(() => UpdateFillBrush()));
         }
 
-        private void UpdateRectangle()
+        private void UpdateFillBrush()
         {
             switch (Cell.State)
             {
