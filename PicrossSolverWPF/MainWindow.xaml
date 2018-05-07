@@ -16,27 +16,37 @@
         
         <StackPanel
             Orientation="Horizontal"
+            HorizontalAlignment="Center"
             Grid.Row="0">
             <TextBox 
                 Name="JsonPath"
+                Margin="4"
                 Width="300"/>
             <Button
                 Name="JsonPathSelector"
+                Margin="4"
                 Click="JsonPathSelector_OnClick">
                 Select json
             </Button>
             <Button
                 Name="Load"
+                Margin="4"
                 Click="Load_OnClick">
                 Load
             </Button>
             <Button
-                Name="Solve" Click="Solve_Click">
+                Name="Solve"
+                Margin="4"
+                Click="Solve_Click">
                 Solve
             </Button>
         </StackPanel>
         <local:PicrossBoardView
             x:Name="BoardView"
+            Height="Auto"
+            Width="Auto"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
             Grid.Row="1">
         </local:PicrossBoardView>
     </Grid>
