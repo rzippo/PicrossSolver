@@ -27,13 +27,19 @@ namespace PicrossSolverLibrary
 
         internal static PicrossPuzzle GetEmpty() => new PicrossPuzzle(){
             Name = "Empty puzzle",
-            ColumnCount = 2,
-            RowCount = 2,
+            ColumnCount = 5,
+            RowCount = 5,
             ColumnRules = new int[][]{
+                new int[]{0},
+                new int[]{0},
+                new int[]{0},
                 new int[]{0},
                 new int[]{0}
             },
             RowRules = new int[][]{
+                new int[]{0},
+                new int[]{0},
+                new int[]{0},
                 new int[]{0},
                 new int[]{0}
             }
