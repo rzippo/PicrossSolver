@@ -9,26 +9,29 @@ namespace PicrossSolverLibrary
 {
     public partial class PicrossBoard
     {
-        public async Task SolveAsync(SpeculativeCallContext context = null)
+        public async Task SolveAsync(int branchingDepth)
         {
             if (!IsValid)
                 return;
             
-            if (context == null)
-                SetDetermibableCells();
+            SetDetermibableCells();
 
             await CandidateExclusionSolveAsync();
 
             if (IsValid && !IsSolved)
             {
                 PicrossBoard speculationBaseBoard = new PicrossBoard(this);
-                PicrossBoard solvedBoard = await speculationBaseBoard.SpeculativeSolveAsync(context);
+                PicrossBoard solvedBoard;
+                if(branchingDepth > 0)
+                    solvedBoard = await speculationBaseBoard.ParallelSpeculativeSolveAsync(branchingDepth);
+                else
+                    solvedBoard = await speculationBaseBoard.SpeculativeSolveAsync();
                 if (solvedBoard != null)
                     this.Copy(solvedBoard);                
             }
         }
 
-        private async Task<PicrossBoard> SpeculativeSolveAsync(SpeculativeCallContext context)
+        private async Task<PicrossBoard> SpeculativeSolveAsync()
         {
             var undeterminedLines = ActiveLines
                     .Where(line => !line.IsSet);
@@ -53,7 +56,7 @@ namespace PicrossSolverLibrary
 
                 SpeculativeCallContext speculativeContext = new SpeculativeCallContext()
                 {
-                    depth = context?.depth + 1 ?? 1,
+                    depth = 1,
                     optionIndex = i,
                     optionsCount = candidatesCount
                 };

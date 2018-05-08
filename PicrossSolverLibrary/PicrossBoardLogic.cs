@@ -31,7 +31,9 @@ namespace PicrossSolverLibrary
 
         public void Solve(
             VerboseLevel verboseLevel = VerboseLevel.Silent,
-            SpeculativeCallContext context = null)
+            SpeculativeCallContext context = null,
+            int branchingDepth = 0
+        )
         {
             if (!IsValid)
             {
@@ -50,41 +52,11 @@ namespace PicrossSolverLibrary
 
             if (IsValid && !IsSolved)
             {
-                var undeterminedLines = ActiveLines
-                    .Where(line => !line.IsSet);
-
-                PicrossActiveLine speculationTarget = undeterminedLines
-                    .First(line => line.CandidateCount ==
-                                undeterminedLines.Min(l => l.CandidateCount));  //todo: review this criteria. Max reduces memory footprint
-
-                Random rng = new Random();
-                var candidateSolutions = speculationTarget.CandidateSolutions
-                    .OrderBy(cs => rng.Next()).ToArray();
-                int candidatesCount = candidateSolutions.Count();
-
-                for (int i = 0; i < candidatesCount; i++)
-                {
-                    PicrossBoard speculativeBoard = new PicrossBoard(this);
-                    speculativeBoard.SetLineSolution(
-                        lineType: speculationTarget.Type,
-                        lineIndex: speculationTarget.Index,
-                        candidateToSet: candidateSolutions[i]
-                    );
-                    
-                    SpeculativeCallContext speculativeContext = new SpeculativeCallContext()
-                    {
-                        depth = context?.depth + 1 ?? 1,
-                        optionIndex = i,
-                        optionsCount = candidatesCount
-                    };
-                        
-                    speculativeBoard.Solve(verboseLevel, speculativeContext);
-                    if (speculativeBoard.IsValid && speculativeBoard.IsSolved)
-                    {
-                        this.Copy(speculativeBoard);
-                        return;
-                    }
-                }
+                PicrossBoard solvedBoard;
+                if (branchingDepth > 0)
+                    solvedBoard = SpeculativeSolve(verboseLevel, context);
+                else
+                    solvedBoard = ParallelSpeculativeSolve(verboseLevel, context, branchingDepth);
             }
 
             if (verboseLevel != VerboseLevel.Silent)
@@ -94,6 +66,91 @@ namespace PicrossSolverLibrary
                 else
                     log.Info("Solving succeeded - " + BoardName(context));
             }
+        }
+
+        private PicrossBoard SpeculativeSolve(
+            VerboseLevel verboseLevel,
+            SpeculativeCallContext context)
+        {
+            var undeterminedLines = ActiveLines
+                .Where(line => !line.IsSet);
+
+            PicrossActiveLine speculationTarget = undeterminedLines
+                .First(line => line.CandidateCount ==
+                            undeterminedLines.Min(l => l.CandidateCount));  //todo: review this criteria. Max reduces memory footprint
+
+            Random rng = new Random();
+            var candidateSolutions = speculationTarget.CandidateSolutions
+                .OrderBy(cs => rng.Next()).ToArray();
+            int candidatesCount = candidateSolutions.Count();
+
+            for (int i = 0; i < candidatesCount; i++)
+            {
+                PicrossBoard speculativeBoard = new PicrossBoard(this);
+                speculativeBoard.SetLineSolution(
+                    lineType: speculationTarget.Type,
+                    lineIndex: speculationTarget.Index,
+                    candidateToSet: candidateSolutions[i]
+                );
+
+                SpeculativeCallContext speculativeContext = new SpeculativeCallContext()
+                {
+                    depth = context?.depth + 1 ?? 1,
+                    optionIndex = i,
+                    optionsCount = candidatesCount
+                };
+
+                speculativeBoard.Solve(verboseLevel, speculativeContext);
+                if (speculativeBoard.IsValid && speculativeBoard.IsSolved)
+                {
+                    return speculativeBoard;
+                }
+            }
+
+            return null;
+        }
+
+        private PicrossBoard ParallelSpeculativeSolve(
+            VerboseLevel verboseLevel,
+            SpeculativeCallContext context,
+            int branchingDepth)
+        {
+            var undeterminedLines = ActiveLines
+                .Where(line => !line.IsSet);
+
+            PicrossActiveLine speculationTarget = undeterminedLines
+                .First(line => line.CandidateCount ==
+                            undeterminedLines.Min(l => l.CandidateCount));  //todo: review this criteria. Max reduces memory footprint
+
+            Random rng = new Random();
+            var candidateSolutions = speculationTarget.CandidateSolutions
+                .OrderBy(cs => rng.Next()).ToArray();
+            int candidatesCount = candidateSolutions.Count();
+
+            for (int i = 0; i < candidatesCount; i++)
+            {
+                PicrossBoard speculativeBoard = new PicrossBoard(this);
+                speculativeBoard.SetLineSolution(
+                    lineType: speculationTarget.Type,
+                    lineIndex: speculationTarget.Index,
+                    candidateToSet: candidateSolutions[i]
+                );
+
+                SpeculativeCallContext speculativeContext = new SpeculativeCallContext()
+                {
+                    depth = context?.depth + 1 ?? 1,
+                    optionIndex = i,
+                    optionsCount = candidatesCount
+                };
+
+                speculativeBoard.Solve(verboseLevel, speculativeContext);
+                if (speculativeBoard.IsValid && speculativeBoard.IsSolved)
+                {
+                    return speculativeBoard;
+                }
+            }
+
+            return null;
         }
 
         private void SetDetermibableCells()
