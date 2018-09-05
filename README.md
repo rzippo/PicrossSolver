@@ -20,6 +20,6 @@ When no further deduction is possible, speculation is used.
 
 # Progress so far
 
-I implemented the solving algorithm and tested with a couple of examples, with aim to add more to find eventual bugs.
-I implemented the command line application, which is being used for the live tests, while the GUI is for now on hold.
-As for performance, single threading results in really long computations that can take up to 40 minutes. Further improvements I'm planning include parallelization and, if possible, vectorization.
+The algorithm has been implemented together with both command line and UI interfaces.
+With the aid of profiling, I reduced the initial running time of ~40 minutes down ~20 seconds, optimizing memory allocations and parallelism.
+I plan to inspect further improvements that may be achievable using value type optimizations possible with the latest advancements of C#.
